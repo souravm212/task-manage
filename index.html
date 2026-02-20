@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<!-- saved from url=(0249)https://storage.abby.abb.com/elabbyinternalassistant/conversations/47871c89-2e4b-4c23-a01e-dcc3e5406e47/output/TaskManager_Ultimate_Final.html?se=2026-02-20T13%3A21%3A59Z&sp=r&sv=2025-07-05&sr=b&sig=DdaYomuHLbOqha%2Bvk0x3%2BGsUqGxsSZZzpMkA1BkuTYo%3D -->
+<!-- saved from url=(0241)https://storage.abby.abb.com/elabbyinternalassistant/conversations/caa979ac-2c9d-4428-b90e-2300ee785939/output/TaskManager_v3.0_FINAL.html?se=2026-02-20T15%3A42%3A36Z&sp=r&sv=2025-07-05&sr=b&sig=f1FqIq4v9DXV6eoDzlBiExiuvhhpze9a992moJKKfh8%3D -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager Pro - Ultimate Edition</title>
+    
+    <!-- SheetJS Library for Excel Import/Export -->
+    <script src="./Task Manager Pro - Ultimate Edition_files/xlsx.full.min.js.download"></script>
+    
     <style>
         * {
             margin: 0;
@@ -15,562 +19,594 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
         }
 
-        /* Login Screen */
-        .login-container {
-            max-width: 450px;
-            margin: 80px auto;
-            background: white;
-            border-radius: 20px;
-            padding: 50px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .login-container h1 {
-            color: #FF000F;
-            margin-bottom: 10px;
-            font-size: 2.2em;
-        }
-
-        .login-container .subtitle {
-            color: #6c757d;
-            font-size: 0.9em;
-            margin-bottom: 40px;
-        }
-
-        .login-container input {
-            width: 100%;
-            padding: 18px;
-            margin-bottom: 20px;
-            border: 2px solid #dee2e6;
-            border-radius: 10px;
-            font-size: 16px;
-        }
-
-        .login-container input:focus {
-            outline: none;
-            border-color: #FF000F;
-        }
-
-        .login-container button {
-            width: 100%;
-            padding: 18px;
-            background: #FF000F;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .login-container button:hover {
-            background: #cc000c;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255,0,15,0.4);
-        }
-
-        /* Main App */
-        .app-container {
-            display: none;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .app-container.show {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Top Bar */
-        .top-nav {
+        .header {
             background: white;
             padding: 20px 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
 
-        .top-nav .logo {
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .user-info {
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
-        .top-nav .logo h1 {
-            color: #FF000F;
-            font-size: 1.8em;
-        }
-
-        .top-nav .logo .version {
-            background: #FF000F;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8em;
-        }
-
-        .top-nav .user-section {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .top-nav .user-info h3 {
-            color: #333;
-            font-size: 1.1em;
-        }
-
-        .top-nav .user-info p {
-            color: #6c757d;
-            font-size: 0.9em;
-        }
-
         .logout-btn {
-            background: #6c757d;
+            background: #ff4757;
             color: white;
             border: none;
-            padding: 10px 25px;
+            padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
+            font-size: 14px;
             transition: all 0.3s;
         }
 
         .logout-btn:hover {
-            background: #5a6268;
+            background: #ff3838;
+            transform: translateY(-2px);
         }
 
-        /* Quick Add Task Bar */
-        .quick-add-bar {
+        .quick-add {
             background: white;
-            padding: 20px 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
             align-items: center;
         }
 
-        .quick-add-bar input, .quick-add-bar select {
+        .quick-add input[type="text"],
+        .quick-add input[type="date"],
+        .quick-add select {
             padding: 12px;
-            border: 2px solid #dee2e6;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 14px;
-        }
-
-        .quick-add-bar input:focus, .quick-add-bar select:focus {
-            outline: none;
-            border-color: #FF000F;
-        }
-
-        .quick-add-bar input[type="text"] {
-            flex: 2;
-        }
-
-        .quick-add-bar select {
-            flex: 0.5;
-        }
-
-        .quick-add-bar input[type="date"] {
-            flex: 0.7;
-        }
-
-        /* Main Content */
-        .main-content {
             flex: 1;
-            overflow-y: auto;
-            padding: 30px;
+            min-width: 200px;
         }
 
-        .content-section {
-            display: none;
-        }
-
-        .content-section.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Dashboard */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .dashboard-panel {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .dashboard-panel h2 {
-            color: #333;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #e9ecef;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5em;
-        }
-
-        .dashboard-panel.today h2 {
-            border-bottom-color: #FF000F;
-        }
-
-        .dashboard-panel.pending h2 {
-            border-bottom-color: #ffc107;
-        }
-
-        .task-card {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 5px solid #dee2e6;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .task-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .task-card.high {
-            border-left-color: #FF000F;
-            background: #fff5f5;
-        }
-
-        .task-card.medium {
-            border-left-color: #ffc107;
-            background: #fffef5;
-        }
-
-        .task-card.low {
-            border-left-color: #6764f6;
-            background: #f5f5ff;
-        }
-
-        .task-card .checkbox {
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .task-card .task-info {
-            flex: 1;
-        }
-
-        .task-card .task-title {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .task-card .task-meta {
-            display: flex;
-            gap: 15px;
-            font-size: 0.9em;
-            color: #6c757d;
-        }
-
-        .priority-badge {
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 0.85em;
-        }
-
-        .priority-high { background: #ffe0e0; color: #FF000F; }
-        .priority-medium { background: #fff3cd; color: #ff8c00; }
-        .priority-low { background: #e4e7ff; color: #6764f6; }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
-
-        .empty-state .icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        /* Completed Tasks Section */
-        .completed-section {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .completed-panel {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .completed-panel h2 {
-            color: #28a745;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #28a745;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5em;
-        }
-
-        .completed-task-card {
-            background: #d4edda;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 5px solid #28a745;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            opacity: 0.9;
-        }
-
-        .completed-task-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            opacity: 1;
-        }
-
-        .completed-task-card .task-title {
-            text-decoration: line-through;
-            color: #155724;
-        }
-
-        .completed-badge {
-            background: #28a745;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 0.85em;
-        }
-
-        /* Notepad */
-        .notepad-container {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 25px;
-            max-width: 1400px;
-            margin: 0 auto;
-            height: calc(100vh - 300px);
-        }
-
-        .notes-sidebar {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow-y: auto;
-        }
-
-        .note-item {
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-left: 4px solid #6764f6;
-        }
-
-        .note-item:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-
-        .note-item.active {
-            background: #fff3f3;
-            border-left-color: #FF000F;
-        }
-
-        .note-item h4 {
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .note-item p {
-            color: #6c757d;
-            font-size: 0.85em;
-        }
-
-        .note-editor {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .note-editor input {
-            font-size: 1.8em;
-            font-weight: bold;
-            margin-bottom: 20px;
-            border: none;
-            border-bottom: 2px solid #e9ecef;
-            border-radius: 0;
-            padding: 10px 0;
-        }
-
-        .note-editor textarea {
-            flex: 1;
-            border: none;
-            resize: none;
-            font-size: 1.1em;
-            line-height: 1.8;
-            padding: 15px 0;
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #FF000F;
-        }
-
-        .note-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #e9ecef;
-        }
-
-        .btn-primary {
-            background: #FF000F;
+        .quick-add button {
+            background: #667eea;
             color: white;
             border: none;
-            padding: 14px 30px;
-            border-radius: 10px;
+            padding: 12px 30px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 14px;
             font-weight: bold;
             transition: all 0.3s;
         }
 
-        .btn-primary:hover {
-            background: #cc000c;
+        .quick-add button:hover {
+            background: #5568d3;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255,0,15,0.3);
         }
 
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .btn-danger:hover {
-            background: #c82333;
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            background: white;
-            border-top: 2px solid #e9ecef;
-            display: flex;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        }
-
-        .nav-tab {
-            flex: 1;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-bottom: 4px solid transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-weight: 600;
-            color: #6c757d;
-        }
-
-        .nav-tab:hover {
-            background: #f8f9fa;
-        }
-
-        .nav-tab.active {
-            border-bottom-color: #FF000F;
-            color: #FF000F;
-            background: #fff3f3;
-        }
-
-        .nav-tab .icon {
-            font-size: 1.5em;
-        }
-
-        /* Floating Action Buttons */
-        .fab-container {
+        .action-buttons {
             position: fixed;
-            bottom: 100px;
+            bottom: 80px;
             right: 30px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
             z-index: 100;
         }
 
-        .fab {
+        .action-btn {
             width: 60px;
             height: 60px;
             border-radius: 50%;
             border: none;
+            font-size: 24px;
             cursor: pointer;
-            font-size: 1.5em;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .fab:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-        }
-
-        .fab.export {
-            background: #28a745;
+        .export-btn {
+            background: #10ac84;
             color: white;
         }
 
-        .fab.import {
-            background: #6764f6;
+        .import-btn {
+            background: #ee5a6f;
             color: white;
         }
 
-        /* Modal */
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 500px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 25px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .task-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .task-panel h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .task-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .task-item.high {
+            border-left-color: #ff4757;
+        }
+
+        .task-item.medium {
+            border-left-color: #ffa502;
+        }
+
+        .task-item.low {
+            border-left-color: #764ba2;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .task-details {
+            flex: 1;
+        }
+
+        .task-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .task-meta {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .priority-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .priority-high {
+            background: #ffe5e5;
+            color: #ff4757;
+        }
+
+        .priority-medium {
+            background: #fff3e0;
+            color: #ffa502;
+        }
+
+        .priority-low {
+            background: #f3e5f5;
+            color: #764ba2;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-right: 10px;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: #2c3e50;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .filter-count {
+            background: #e0e0e0;
+            color: #2c3e50;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .filter-btn.active .filter-count {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        /* All Tasks Table Styles */
+        .all-tasks-container {
+            overflow-x: auto;
+        }
+
+        .tasks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .tasks-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .tasks-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tasks-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .edit-input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .edit-select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-edit {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .btn-edit:hover {
+            background: #5568d3;
+        }
+
+        .btn-save {
+            background: #10ac84;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            background: #0e9670;
+        }
+
+        .btn-cancel {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-delete {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .btn-delete:hover {
+            background: #ff3838;
+        }
+
+        .editable-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #667eea;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            left: 28px;
+        }
+
+        .notepad-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .notepad-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .export-notes-btn {
+            background: #10ac84;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .export-notes-btn:hover {
+            background: #0e9670;
+            transform: translateY(-2px);
+        }
+
+        .note-item {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffa502;
+            position: relative;
+        }
+
+        .note-item.editing {
+            background: #e8f5e9;
+            border-left-color: #10ac84;
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .note-date {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .note-content {
+            color: #2c3e50;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .note-input {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .note-edit-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #10ac84;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ff3838;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -578,752 +614,1473 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.7);
             z-index: 1000;
             align-items: center;
             justify-content: center;
         }
 
-        .modal.show {
+        .modal.active {
             display: flex;
         }
 
         .modal-content {
             background: white;
+            padding: 30px;
             border-radius: 15px;
-            padding: 40px;
-            max-width: 600px;
+            max-width: 500px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
         }
 
-        .modal-content h2 {
-            color: #333;
-            margin-bottom: 25px;
-        }
-
-        .modal-content textarea {
-            width: 100%;
-            min-height: 300px;
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 2px solid #dee2e6;
-            border-radius: 10px;
-            font-size: 14px;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-
-        .export-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .modal-header {
             margin-bottom: 20px;
         }
 
-        .export-option {
-            padding: 20px;
-            border: 2px solid #dee2e6;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .export-option:hover {
-            border-color: #FF000F;
-            background: #fff3f3;
-        }
-
-        .export-option .icon {
-            font-size: 2em;
+        .modal-header h2 {
+            color: #667eea;
             margin-bottom: 10px;
         }
 
-        .file-upload {
-            border: 3px dashed #dee2e6;
-            border-radius: 10px;
-            padding: 40px;
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .export-option {
+            padding: 15px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
             text-align: center;
+            font-weight: 600;
+        }
+
+        .export-option:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-box h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
         }
 
-        .file-upload:hover {
-            border-color: #FF000F;
-            background: #fff3f3;
+        .login-box button:hover {
+            background: #5568d3;
         }
 
-        .file-upload input {
-            display: none;
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10ac84;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
         }
 
-        @media (max-width: 1024px) {
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #95a5a6;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
-            .notepad-container {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-            .quick-add-bar {
+
+            .quick-add {
                 flex-direction: column;
             }
-            .quick-add-bar input, .quick-add-bar select {
+
+            .quick-add input,
+            .quick-add select,
+            .quick-add button {
                 width: 100%;
             }
+
+            .tasks-table {
+                font-size: 12px;
+            }
+
+            .tasks-table th,
+            .tasks-table td {
+                padding: 8px;
+            }
+
+            .filter-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .task-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
         }
     </style>
-    <script src="./index_files/xlsx.full.min.js.download"></script>
-</head>
+<script>bazadebezolkohpepadr="1546943932"</script><script type="text/javascript" src="./Task Manager Pro - Ultimate Edition_files/5c347c07" defer=""></script></head>
 <body>
     <!-- Login Screen -->
-    <div class="login-container" id="login-screen" style="display: block;">
-        <h1>📋 Task Manager Pro</h1>
-        <p class="subtitle">Ultimate Edition - Complete Control!</p>
-        <p style="color: #6c757d; margin-bottom: 30px; font-size: 0.9em;">
-            ✅ Quick Add • 📥 Excel Import • 📤 Export • ↩️ Undo Complete • 💾 Permanent Storage
-        </p>
-        <input type="text" id="username-input" placeholder="Enter your name">
-        <button onclick="login()">Start Managing Tasks</button>
+    <div id="loginScreen" class="login-screen hidden">
+        <div class="login-box">
+            <h2>📋 Task Manager Pro</h2>
+            <p style="text-align: center; color: #7f8c8d; margin-bottom: 20px;">Ultimate Edition v3.0 - FINAL</p>
+            <input type="text" id="usernameInput" placeholder="Enter your name">
+            <button onclick="login()">Start Managing Tasks</button>
+        </div>
     </div>
 
     <!-- Main App -->
-    <div class="app-container" id="main-app">
-        <div class="top-nav">
-            <div class="logo">
-                <h1>📋 Task Manager</h1>
-                <span class="version">Ultimate</span>
-            </div>
-            <div class="user-section">
+    <div id="mainApp" class="">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div>
+                    <h1>📋 <span id="userName">Sourav</span>, Welcome to Task Manager</h1>
+                    <p style="color: #7f8c8d;">Manage your tasks efficiently</p>
+                </div>
                 <div class="user-info">
-                    <h3 id="top-username">Welcome</h3>
-                    <p id="top-date"></p>
-                </div>
-                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
-            </div>
-        </div>
-
-        <!-- Quick Add Task Bar -->
-        <div class="quick-add-bar">
-            <input type="text" id="quick-task" placeholder="✨ Quick add task...">
-            <select id="quick-priority">
-                <option value="low">Low</option>
-                <option value="medium" selected="">Medium</option>
-                <option value="high">High</option>
-            </select>
-            <input type="date" id="quick-date">
-            <button class="btn-primary" onclick="quickAddTask()">➕ Add Task</button>
-        </div>
-
-        <div class="main-content">
-            <!-- Dashboard -->
-            <div class="content-section active" id="dashboard-section">
-                <div class="dashboard-grid">
-                    <div class="dashboard-panel today">
-                        <h2>📅 Today's Tasks</h2>
-                        <div id="today-tasks-list"></div>
-                    </div>
-                    <div class="dashboard-panel pending">
-                        <h2>⏳ Pending Tasks (Overdue)</h2>
-                        <div id="pending-tasks-list"></div>
-                    </div>
+                    <span style="color: #7f8c8d;">Version 3.0 - FINAL</span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
                 </div>
             </div>
 
-            <!-- Completed Tasks -->
-            <div class="content-section" id="completed-section">
-                <div class="completed-section">
-                    <div class="completed-panel">
-                        <h2>✅ Completed Tasks</h2>
-                        <p style="color: #6c757d; margin-bottom: 20px;">
-                            Click the checkbox to uncheck and move task back to dashboard/pending list
-                        </p>
-                        <div id="completed-tasks-list"></div>
-                    </div>
-                </div>
+            <!-- Quick Add Task -->
+            <div class="quick-add">
+                <input type="text" id="quickTaskName" placeholder="Task name...">
+                <select id="quickTaskPriority">
+                    <option value="high">High Priority</option>
+                    <option value="medium" selected="">Medium Priority</option>
+                    <option value="low">Low Priority</option>
+                </select>
+                <input type="date" id="quickTaskDate">
+                <button onclick="quickAddTask()">➕ Add Task</button>
             </div>
 
-            <!-- Notepad -->
-            <div class="content-section" id="notepad-section">
-                <div class="notepad-container">
-                    <div class="notes-sidebar">
-                        <button class="btn-primary" style="width: 100%; margin-bottom: 25px;" onclick="createNewNote()">
-                            ➕ New Note
-                        </button>
-                        <h3>📝 My Notes</h3>
-                        <div id="notes-list"></div>
+            <!-- Content Area -->
+            <div class="content">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab(&#39;dashboard&#39;)">📊 Dashboard</button>
+                    <button class="tab" onclick="switchTab(&#39;alltasks&#39;)">📋 All Tasks <span id="taskCount" class="task-count">16</span></button>
+                    <button class="tab" onclick="switchTab(&#39;completed&#39;)">✅ Completed</button>
+                    <button class="tab" onclick="switchTab(&#39;notepad&#39;)">📝 Notepad</button>
+                </div>
+
+                <!-- Dashboard Tab -->
+                <div id="dashboardTab" class="tab-content active">
+                    <div class="dashboard-grid">
+                        <div class="task-panel">
+                            <h3>📅 Today's Tasks</h3>
+                            <div id="todayTasks">
+                <div class="task-item medium">
+                    <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752350)">
+                    <div class="task-details">
+                        <div class="task-name">Team meeting preparation</div>
+                        <div class="task-meta">
+                            <span class="priority-badge priority-medium">medium</span>
+                            <span> • Due: Today</span>
+                            
+                        </div>
                     </div>
-                    <div class="note-editor">
-                        <input type="text" id="note-title" placeholder="Note Title...">
-                        <textarea id="note-content" placeholder="Start typing your note..."></textarea>
-                        <div class="note-actions">
-                            <button class="btn-primary" onclick="saveNote()">💾 Save Note</button>
-                            <button class="btn-danger" onclick="deleteNote()">🗑️ Delete</button>
+                </div>
+            
+                <div class="task-item high">
+                    <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598931383)">
+                    <div class="task-details">
+                        <div class="task-name">test 2-single added</div>
+                        <div class="task-meta">
+                            <span class="priority-badge priority-high">high</span>
+                            <span> • Due: Today</span>
+                            
                         </div>
                     </div>
                 </div>
             </div>
+                        </div>
+                        <div class="task-panel">
+                            <h3>⏰ Pending Tasks</h3>
+                            <div id="pendingTasks"><div class="empty-state"><div class="empty-state-icon">✨</div><p>No pending tasks</p></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Tasks Tab -->
+                <div id="alltasksTab" class="tab-content">
+                    <!-- Filter Section -->
+                    <div class="filter-section">
+                        <span class="filter-label">📅 Filter by Date:</span>
+                        <button class="filter-btn active" onclick="filterTasks(&#39;all&#39;)" id="filter-all">
+                            All Tasks <span class="filter-count" id="count-all">16</span>
+                        </button>
+                        <button class="filter-btn" onclick="filterTasks(&#39;today&#39;)" id="filter-today">
+                            Today <span class="filter-count" id="count-today">2</span>
+                        </button>
+                        <button class="filter-btn" onclick="filterTasks(&#39;tomorrow&#39;)" id="filter-tomorrow">
+                            Tomorrow <span class="filter-count" id="count-tomorrow">1</span>
+                        </button>
+                        <button class="filter-btn" onclick="filterTasks(&#39;dayafter&#39;)" id="filter-dayafter">
+                            Day After <span class="filter-count" id="count-dayafter">2</span>
+                        </button>
+                        <button class="filter-btn" onclick="filterTasks(&#39;future&#39;)" id="filter-future">
+                            Future <span class="filter-count" id="count-future">10</span>
+                        </button>
+                        <button class="filter-btn" onclick="filterTasks(&#39;overdue&#39;)" id="filter-overdue">
+                            Overdue <span class="filter-count" id="count-overdue">0</span>
+                        </button>
+                    </div>
+
+                    <div class="editable-toggle">
+                        <span style="font-weight: 600; color: #2c3e50;">Edit Mode:</span>
+                        <div class="toggle-switch" id="editToggle" onclick="toggleEditMode()">
+                            <div class="toggle-slider"></div>
+                        </div>
+                        <span id="editModeText" style="color: rgb(127, 140, 141);">OFF</span>
+                    </div>
+                    <div class="all-tasks-container">
+                        <table class="tasks-table">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Task Name</th>
+                                    <th>Priority</th>
+                                    <th>Due Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allTasksBody">
+                        <tr id="task-row-1771598752349">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" checked="" onchange="toggleTask(1771598752349)">
+                            </td>
+                            <td>Complete project report- editied</td>
+                            <td><span class="priority-badge priority-high">high</span></td>
+                            <td>Feb 19, 2026</td>
+                            <td>✅ Completed</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752350">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752350)">
+                            </td>
+                            <td>Team meeting preparation</td>
+                            <td><span class="priority-badge priority-medium">medium</span></td>
+                            <td>Today</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752351">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752351)">
+                            </td>
+                            <td>Review documentation</td>
+                            <td><span class="priority-badge priority-low">low</span></td>
+                            <td>Tomorrow</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752352">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752352)">
+                            </td>
+                            <td>Client presentation</td>
+                            <td><span class="priority-badge priority-high">high</span></td>
+                            <td>Feb 22, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752353">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752353)">
+                            </td>
+                            <td>Update project timeline</td>
+                            <td><span class="priority-badge priority-medium">medium</span></td>
+                            <td>Feb 22, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752354">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752354)">
+                            </td>
+                            <td>Code review session</td>
+                            <td><span class="priority-badge priority-high">high</span></td>
+                            <td>Feb 23, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752355">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752355)">
+                            </td>
+                            <td>Budget planning meeting</td>
+                            <td><span class="priority-badge priority-medium">medium</span></td>
+                            <td>Feb 24, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752356">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752356)">
+                            </td>
+                            <td>Send follow-up emails</td>
+                            <td><span class="priority-badge priority-low">low</span></td>
+                            <td>Feb 24, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752357">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752357)">
+                            </td>
+                            <td>Prepare monthly report</td>
+                            <td><span class="priority-badge priority-high">high</span></td>
+                            <td>Feb 25, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752358">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752358)">
+                            </td>
+                            <td>Team building activity</td>
+                            <td><span class="priority-badge priority-low">low</span></td>
+                            <td>Feb 26, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752359">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752359)">
+                            </td>
+                            <td>System maintenance check</td>
+                            <td><span class="priority-badge priority-medium">medium</span></td>
+                            <td>Feb 27, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752360">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752360)">
+                            </td>
+                            <td>Training session</td>
+                            <td><span class="priority-badge priority-low">low</span></td>
+                            <td>Feb 28, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752361">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752361)">
+                            </td>
+                            <td>Quarterly review</td>
+                            <td><span class="priority-badge priority-high">high</span></td>
+                            <td>Mar 1, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752362">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752362)">
+                            </td>
+                            <td>Update stakeholders</td>
+                            <td><span class="priority-badge priority-medium">medium</span></td>
+                            <td>Mar 1, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598752363">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752363)">
+                            </td>
+                            <td>Archive old files</td>
+                            <td><span class="priority-badge priority-low">low</span></td>
+                            <td>Mar 1, 2026</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    
+                        <tr id="task-row-1771598931383">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598931383)">
+                            </td>
+                            <td>test 2-single added</td>
+                            <td><span class="priority-badge priority-high">high</span></td>
+                            <td>Today</td>
+                            <td>⏳ Pending</td>
+                        </tr>
+                    </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Completed Tab -->
+                <div id="completedTab" class="tab-content">
+                    <h3 style="margin-bottom: 20px;">✅ Completed Tasks</h3>
+                    <div id="completedTasks">
+                <div class="task-item high">
+                    <input type="checkbox" class="task-checkbox" checked="" onchange="toggleTask(1771598752349)">
+                    <div class="task-details">
+                        <div class="task-name">Complete project report- editied</div>
+                        <div class="task-meta">
+                            <span class="priority-badge priority-high">high</span>
+                            <span> • Due: Feb 19, 2026</span>
+                             • Completed: Today
+                        </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+
+                <!-- Notepad Tab -->
+                <div id="notepadTab" class="tab-content">
+                    <div class="notepad-area">
+                        <div class="notepad-header">
+                            <h3>📝 My Notes</h3>
+                            <button class="export-notes-btn" onclick="openExportNotesModal()">📤 Export Notes</button>
+                        </div>
+                        <textarea id="noteInput" class="note-input" placeholder="Write your notes here..."></textarea>
+                        <button class="btn btn-primary" onclick="saveNote()">💾 Save Note</button>
+                        <div id="notesList">
+                    <div class="note-item" id="note-1771597818841">
+                        <div class="note-header">
+                            <span class="note-date">20/2/2026, 8:17:36 pm</span>
+                            <div class="note-actions">
+                                <button class="btn btn-primary btn-small" onclick="editNote(1771597818841)">✏️ Edit</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteNote(1771597818841)">🗑️ Delete</button>
+                            </div>
+                        </div>
+                        <div class="note-content">saved test 2- edited
+hshs</div>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="bottom-nav">
-            <div class="nav-tab active" onclick="showSection(&#39;dashboard&#39;)">
-                <span class="icon">📊</span>
-                <span>Dashboard</span>
-            </div>
-            <div class="nav-tab" onclick="showSection(&#39;completed&#39;)">
-                <span class="icon">✅</span>
-                <span>Completed</span>
-            </div>
-            <div class="nav-tab" onclick="showSection(&#39;notepad&#39;)">
-                <span class="icon">📝</span>
-                <span>Notepad</span>
-            </div>
-        </div>
-
-        <!-- Floating Action Buttons -->
-        <div class="fab-container">
-            <button class="fab export" onclick="openExportModal()" title="Export Tasks">📤</button>
-            <button class="fab import" onclick="openImportModal()" title="Import Tasks">📥</button>
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn export-btn" onclick="openExportModal()" title="Export Tasks">📤</button>
+            <button class="action-btn import-btn" onclick="openImportModal()" title="Import Tasks">📥</button>
         </div>
     </div>
 
-    <!-- Export Modal -->
-    <div class="modal" id="export-modal">
+    <!-- Export Tasks Modal -->
+    <div id="exportModal" class="modal">
         <div class="modal-content">
-            <h2>📤 Export Tasks</h2>
+            <div class="modal-header">
+                <h2>📤 Export Tasks</h2>
+                <p style="color: #7f8c8d;">Choose export format</p>
+            </div>
             <div class="export-options">
-                <div class="export-option" onclick="exportToExcel()">
-                    <div class="icon">📊</div>
-                    <h3>Excel</h3>
-                    <p>Export as .xlsx</p>
+                <div class="export-option" onclick="exportTasks(&#39;excel&#39;)">
+                    📊 Export to Excel (.xlsx)
                 </div>
-                <div class="export-option" onclick="exportToCSV()">
-                    <div class="icon">📄</div>
-                    <h3>CSV</h3>
-                    <p>Export as .csv</p>
+                <div class="export-option" onclick="exportTasks(&#39;csv&#39;)">
+                    📄 Export to CSV (.csv)
                 </div>
-                <div class="export-option" onclick="exportToJSON()">
-                    <div class="icon">💾</div>
-                    <h3>JSON</h3>
-                    <p>Export as .json</p>
+                <div class="export-option" onclick="exportTasks(&#39;json&#39;)">
+                    📋 Export to JSON (.json)
                 </div>
-                <div class="export-option" onclick="exportToTXT()">
-                    <div class="icon">📝</div>
-                    <h3>Text</h3>
-                    <p>Export as .txt</p>
+                <div class="export-option" onclick="exportTasks(&#39;txt&#39;)">
+                    📝 Export to Text (.txt)
                 </div>
             </div>
-            <div class="modal-actions">
-                <button class="btn-secondary" onclick="closeExportModal()">Close</button>
+            <div class="modal-buttons">
+                <button class="btn btn-danger" onclick="closeExportModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Notes Modal -->
+    <div id="exportNotesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📤 Export Notes</h2>
+                <p style="color: #7f8c8d;">Choose export format for your notes</p>
+            </div>
+            <div class="export-options">
+                <div class="export-option" onclick="exportNotes(&#39;excel&#39;)">
+                    📊 Export to Excel (.xlsx)
+                </div>
+                <div class="export-option" onclick="exportNotes(&#39;csv&#39;)">
+                    📄 Export to CSV (.csv)
+                </div>
+                <div class="export-option" onclick="exportNotes(&#39;json&#39;)">
+                    📋 Export to JSON (.json)
+                </div>
+                <div class="export-option" onclick="exportNotes(&#39;txt&#39;)">
+                    📝 Export to Text (.txt)
+                </div>
+                <div class="export-option" onclick="exportNotes(&#39;pdf&#39;)">
+                    📄 Export to PDF-ready Text
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-danger" onclick="closeExportNotesModal()">Cancel</button>
             </div>
         </div>
     </div>
 
     <!-- Import Modal -->
-    <div class="modal" id="import-modal">
+    <div id="importModal" class="modal">
         <div class="modal-content">
-            <h2>📥 Import Tasks</h2>
-            <p style="color: #6c757d; margin-bottom: 20px;">
-                Upload an Excel file with columns: Task, Priority, Due Date
-            </p>
-            <div class="file-upload" onclick="document.getElementById(&#39;excel-file&#39;).click()">
-                <input type="file" id="excel-file" accept=".xlsx,.xls" onchange="handleExcelUpload(event)">
-                <div style="font-size: 3em; margin-bottom: 15px;">📁</div>
-                <h3>Click to Upload Excel File</h3>
-                <p style="color: #6c757d; margin-top: 10px;">Supports .xlsx and .xls files</p>
-            </div>
-            <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
-                <h4 style="margin-bottom: 10px;">Excel Format:</h4>
-                <p style="color: #6c757d; font-size: 0.9em;">
-                    Column A: Task Name<br>
-                    Column B: Priority (high/medium/low)<br>
-                    Column C: Due Date (YYYY-MM-DD)
+            <div class="modal-header">
+                <h2>📥 Import Tasks</h2>
+                <p style="color: #7f8c8d;">Upload Excel file with tasks</p>
+                <p style="color: #7f8c8d; font-size: 12px; margin-top: 10px;">
+                    Format: Column A = Task Name, Column B = Priority (high/medium/low), Column C = Due Date (YYYY-MM-DD)
                 </p>
             </div>
-            <div class="modal-actions" style="margin-top: 20px;">
-                <button class="btn-secondary" onclick="closeImportModal()">Close</button>
+            <input type="file" id="excelFileInput" accept=".xlsx,.xls" onchange="importExcel()">
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="document.getElementById(&#39;excelFileInput&#39;).click()">
+                📁 Choose Excel File
+            </button>
+            <div class="modal-buttons">
+                <button class="btn btn-danger" onclick="closeImportModal()">Cancel</button>
             </div>
         </div>
     </div>
 
     <script>
-        let currentUser = null;
+        // Global Variables
+        let currentUser = '';
         let tasks = [];
         let notes = [];
-        let currentNoteId = null;
+        let editMode = false;
+        let currentFilter = 'all';
 
-        function init() {
-            const savedUser = localStorage.getItem('taskManagerUser');
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('quickTaskDate').valueAsDate = new Date();
+            
+            const savedUser = localStorage.getItem('currentUser');
             if (savedUser) {
                 currentUser = savedUser;
                 loadUserData();
                 showMainApp();
-            } else {
-                showLoginScreen();
             }
-        }
+        });
 
+        // Login Function
         function login() {
-            const username = document.getElementById('username-input').value.trim();
-            if (!username) {
-                alert('Please enter your name!');
+            const username = document.getElementById('usernameInput').value.trim();
+            if (username === '') {
+                alert('Please enter your name');
                 return;
             }
             currentUser = username;
-            localStorage.setItem('taskManagerUser', username);
+            localStorage.setItem('currentUser', currentUser);
             loadUserData();
             showMainApp();
         }
 
+        // Logout Function
         function logout() {
-            if (confirm('Logout? Your data is saved.')) {
-                localStorage.removeItem('taskManagerUser');
-                currentUser = null;
-                showLoginScreen();
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                location.reload();
             }
         }
 
-        function showLoginScreen() {
-            document.getElementById('login-screen').style.display = 'block';
-            document.getElementById('main-app').classList.remove('show');
-        }
-
+        // Show Main App
         function showMainApp() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-app').classList.add('show');
-            document.getElementById('top-username').textContent = `Welcome, ${currentUser}!`;
-            document.getElementById('top-date').textContent = new Date().toLocaleDateString('en-US', 
-                { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('quick-date').valueAsDate = new Date();
-            loadDashboard();
-            loadNotes();
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('userName').textContent = currentUser;
+            renderDashboard();
+            renderAllTasks();
+            renderNotes();
+            updateTaskCount();
+            updateFilterCounts();
         }
 
-        function showSection(section) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
-            document.getElementById(`${section}-section`).classList.add('active');
-            event.target.closest('.nav-tab').classList.add('active');
-            
-            if (section === 'dashboard') {
-                loadDashboard();
-            } else if (section === 'completed') {
-                loadCompletedTasks();
-            }
-        }
-
+        // Load User Data
         function loadUserData() {
             const userTasks = localStorage.getItem(`tasks_${currentUser}`);
             const userNotes = localStorage.getItem(`notes_${currentUser}`);
+            
             tasks = userTasks ? JSON.parse(userTasks) : [];
             notes = userNotes ? JSON.parse(userNotes) : [];
         }
 
-        function saveTasks() {
+        // Save User Data
+        function saveUserData() {
             localStorage.setItem(`tasks_${currentUser}`, JSON.stringify(tasks));
+            localStorage.setItem(`notes_${currentUser}`, JSON.stringify(notes));
         }
 
-        function saveNotes() {
-            localStorage.setItem(`notes_${currentUser}`, JSON.stringify(notes));
+        // Get Date Helpers
+        function getToday() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function getTomorrow() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return tomorrow.toISOString().split('T')[0];
+        }
+
+        function getDayAfter() {
+            const dayAfter = new Date();
+            dayAfter.setDate(dayAfter.getDate() + 2);
+            return dayAfter.toISOString().split('T')[0];
+        }
+
+        // Filter Tasks
+        function filterTasks(filter) {
+            currentFilter = filter;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`filter-${filter}`).classList.add('active');
+            
+            renderAllTasks();
+        }
+
+        // Get Filtered Tasks
+        function getFilteredTasks() {
+            const today = getToday();
+            const tomorrow = getTomorrow();
+            const dayAfter = getDayAfter();
+            
+            switch(currentFilter) {
+                case 'all':
+                    return tasks;
+                case 'today':
+                    return tasks.filter(t => t.dueDate === today);
+                case 'tomorrow':
+                    return tasks.filter(t => t.dueDate === tomorrow);
+                case 'dayafter':
+                    return tasks.filter(t => t.dueDate === dayAfter);
+                case 'future':
+                    return tasks.filter(t => t.dueDate > dayAfter);
+                case 'overdue':
+                    return tasks.filter(t => t.dueDate < today && !t.completed);
+                default:
+                    return tasks;
+            }
+        }
+
+        // Update Filter Counts
+        function updateFilterCounts() {
+            const today = getToday();
+            const tomorrow = getTomorrow();
+            const dayAfter = getDayAfter();
+            
+            document.getElementById('count-all').textContent = tasks.length;
+            document.getElementById('count-today').textContent = tasks.filter(t => t.dueDate === today).length;
+            document.getElementById('count-tomorrow').textContent = tasks.filter(t => t.dueDate === tomorrow).length;
+            document.getElementById('count-dayafter').textContent = tasks.filter(t => t.dueDate === dayAfter).length;
+            document.getElementById('count-future').textContent = tasks.filter(t => t.dueDate > dayAfter).length;
+            document.getElementById('count-overdue').textContent = tasks.filter(t => t.dueDate < today && !t.completed).length;
         }
 
         // Quick Add Task
         function quickAddTask() {
-            const taskText = document.getElementById('quick-task').value.trim();
-            const priority = document.getElementById('quick-priority').value;
-            const dueDate = document.getElementById('quick-date').value;
+            const taskName = document.getElementById('quickTaskName').value.trim();
+            const priority = document.getElementById('quickTaskPriority').value;
+            const dueDate = document.getElementById('quickTaskDate').value;
 
-            if (!taskText) {
-                alert('Please enter a task!');
+            if (taskName === '') {
+                alert('Please enter task name');
                 return;
             }
 
-            tasks.push({
+            const task = {
                 id: Date.now(),
-                text: taskText,
+                name: taskName,
                 priority: priority,
                 dueDate: dueDate,
                 completed: false,
-                createdAt: new Date().toISOString()
+                completedDate: null
+            };
+
+            tasks.push(task);
+            saveUserData();
+            
+            document.getElementById('quickTaskName').value = '';
+            document.getElementById('quickTaskPriority').value = 'medium';
+            document.getElementById('quickTaskDate').valueAsDate = new Date();
+
+            renderDashboard();
+            renderAllTasks();
+            updateTaskCount();
+            updateFilterCounts();
+            showNotification('Task added successfully! ✅');
+        }
+
+        // Toggle Task Completion
+        function toggleTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                task.completedDate = task.completed ? new Date().toISOString() : null;
+                saveUserData();
+                renderDashboard();
+                renderAllTasks();
+                updateFilterCounts();
+                
+                if (task.completed) {
+                    showNotification('Task completed! 🎉');
+                } else {
+                    showNotification('Task moved back to pending! 📋');
+                }
+            }
+        }
+
+        // Toggle Edit Mode
+        function toggleEditMode() {
+            editMode = !editMode;
+            const toggle = document.getElementById('editToggle');
+            const text = document.getElementById('editModeText');
+            
+            if (editMode) {
+                toggle.classList.add('active');
+                text.textContent = 'ON';
+                text.style.color = '#667eea';
+            } else {
+                toggle.classList.remove('active');
+                text.textContent = 'OFF';
+                text.style.color = '#7f8c8d';
+            }
+            
+            renderAllTasks();
+        }
+
+        // Edit Task
+        function editTask(taskId) {
+            const row = document.getElementById(`task-row-${taskId}`);
+            const task = tasks.find(t => t.id === taskId);
+            
+            if (!task) return;
+
+            row.innerHTML = `
+                <td>
+                    <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${taskId})" />
+                </td>
+                <td>
+                    <input type="text" class="edit-input" id="edit-name-${taskId}" value="${task.name}" />
+                </td>
+                <td>
+                    <select class="edit-select" id="edit-priority-${taskId}">
+                        <option value="high" ${task.priority === 'high' ? 'selected' : ''}>High</option>
+                        <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>Medium</option>
+                        <option value="low" ${task.priority === 'low' ? 'selected' : ''}>Low</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="date" class="edit-input" id="edit-date-${taskId}" value="${task.dueDate}" />
+                </td>
+                <td class="task-actions">
+                    <button class="btn-save" onclick="saveTaskEdit(${taskId})">💾 Save</button>
+                    <button class="btn-cancel" onclick="renderAllTasks()">❌ Cancel</button>
+                </td>
+            `;
+        }
+
+        // Save Task Edit
+        function saveTaskEdit(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            
+            if (!task) return;
+
+            const newName = document.getElementById(`edit-name-${taskId}`).value.trim();
+            const newPriority = document.getElementById(`edit-priority-${taskId}`).value;
+            const newDate = document.getElementById(`edit-date-${taskId}`).value;
+
+            if (newName === '') {
+                alert('Task name cannot be empty');
+                return;
+            }
+
+            task.name = newName;
+            task.priority = newPriority;
+            task.dueDate = newDate;
+
+            saveUserData();
+            renderAllTasks();
+            renderDashboard();
+            updateFilterCounts();
+            showNotification('Task updated! ✅');
+        }
+
+        // Delete Task
+        function deleteTask(taskId) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                tasks = tasks.filter(t => t.id !== taskId);
+                saveUserData();
+                renderAllTasks();
+                renderDashboard();
+                updateTaskCount();
+                updateFilterCounts();
+                showNotification('Task deleted! 🗑️');
+            }
+        }
+
+        // Render All Tasks
+        function renderAllTasks() {
+            const tbody = document.getElementById('allTasksBody');
+            const filteredTasks = getFilteredTasks();
+            
+            if (filteredTasks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><div class="empty-state-icon">📭</div><p>No tasks in this filter</p></td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filteredTasks.map(task => {
+                const priorityClass = `priority-${task.priority}`;
+                
+                if (editMode) {
+                    return `
+                        <tr id="task-row-${task.id}">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})" />
+                            </td>
+                            <td>${task.name}</td>
+                            <td><span class="priority-badge ${priorityClass}">${task.priority}</span></td>
+                            <td>${formatDate(task.dueDate)}</td>
+                            <td class="task-actions">
+                                <button class="btn-edit" onclick="editTask(${task.id})">✏️ Edit</button>
+                                <button class="btn-delete" onclick="deleteTask(${task.id})">🗑️ Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    return `
+                        <tr id="task-row-${task.id}">
+                            <td>
+                                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})" />
+                            </td>
+                            <td>${task.name}</td>
+                            <td><span class="priority-badge ${priorityClass}">${task.priority}</span></td>
+                            <td>${formatDate(task.dueDate)}</td>
+                            <td>${task.completed ? '✅ Completed' : '⏳ Pending'}</td>
+                        </tr>
+                    `;
+                }
+            }).join('');
+        }
+
+        // Update Task Count
+        function updateTaskCount() {
+            document.getElementById('taskCount').textContent = tasks.length;
+        }
+
+        // Render Dashboard
+        function renderDashboard() {
+            const today = getToday();
+            
+            const todayTasks = tasks.filter(t => !t.completed && t.dueDate === today);
+            const todayContainer = document.getElementById('todayTasks');
+            
+            if (todayTasks.length === 0) {
+                todayContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No tasks for today</p></div>';
+            } else {
+                todayContainer.innerHTML = todayTasks.map(task => createTaskHTML(task)).join('');
+            }
+
+            const pendingTasks = tasks.filter(t => !t.completed && t.dueDate < today);
+            const pendingContainer = document.getElementById('pendingTasks');
+            
+            if (pendingTasks.length === 0) {
+                pendingContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✨</div><p>No pending tasks</p></div>';
+            } else {
+                pendingContainer.innerHTML = pendingTasks.map(task => createTaskHTML(task)).join('');
+            }
+
+            const completedTasks = tasks.filter(t => t.completed);
+            const completedContainer = document.getElementById('completedTasks');
+            
+            if (completedTasks.length === 0) {
+                completedContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎯</div><p>No completed tasks yet</p></div>';
+            } else {
+                completedContainer.innerHTML = completedTasks.map(task => createTaskHTML(task)).join('');
+            }
+        }
+
+        // Create Task HTML
+        function createTaskHTML(task) {
+            const priorityClass = `priority-${task.priority}`;
+            const taskClass = task.priority;
+            const checked = task.completed ? 'checked' : '';
+            
+            return `
+                <div class="task-item ${taskClass}">
+                    <input type="checkbox" class="task-checkbox" ${checked} onchange="toggleTask(${task.id})" />
+                    <div class="task-details">
+                        <div class="task-name">${task.name}</div>
+                        <div class="task-meta">
+                            <span class="priority-badge ${priorityClass}">${task.priority}</span>
+                            <span> • Due: ${formatDate(task.dueDate)}</span>
+                            ${task.completed ? ` • Completed: ${formatDate(task.completedDate.split('T')[0])}` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Format Date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            if (dateString === today.toISOString().split('T')[0]) {
+                return 'Today';
+            } else if (dateString === tomorrow.toISOString().split('T')[0]) {
+                return 'Tomorrow';
+            } else {
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            }
+        }
+
+        // Save Note
+        function saveNote() {
+            const noteContent = document.getElementById('noteInput').value.trim();
+            
+            if (noteContent === '') {
+                alert('Please write something in the note');
+                return;
+            }
+
+            const note = {
+                id: Date.now(),
+                content: noteContent,
+                date: new Date().toISOString()
+            };
+
+            notes.push(note);
+            saveUserData();
+            document.getElementById('noteInput').value = '';
+            renderNotes();
+            showNotification('Note saved! 📝');
+        }
+
+        // Edit Note
+        function editNote(noteId) {
+            const note = notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            const noteItem = document.getElementById(`note-${noteId}`);
+            noteItem.classList.add('editing');
+            
+            noteItem.innerHTML = `
+                <div class="note-header">
+                    <span class="note-date">${new Date(note.date).toLocaleString()}</span>
+                </div>
+                <textarea class="note-edit-input" id="edit-note-${noteId}">${note.content}</textarea>
+                <div class="note-actions">
+                    <button class="btn btn-primary btn-small" onclick="saveNoteEdit(${noteId})">💾 Save</button>
+                    <button class="btn btn-cancel btn-small" onclick="renderNotes()">❌ Cancel</button>
+                </div>
+            `;
+        }
+
+        // Save Note Edit
+        function saveNoteEdit(noteId) {
+            const note = notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            const newContent = document.getElementById(`edit-note-${noteId}`).value.trim();
+            
+            if (newContent === '') {
+                alert('Note cannot be empty');
+                return;
+            }
+
+            note.content = newContent;
+            note.date = new Date().toISOString();
+            
+            saveUserData();
+            renderNotes();
+            showNotification('Note updated! ✅');
+        }
+
+        // Delete Note
+        function deleteNote(noteId) {
+            if (confirm('Delete this note?')) {
+                notes = notes.filter(n => n.id !== noteId);
+                saveUserData();
+                renderNotes();
+                showNotification('Note deleted! 🗑️');
+            }
+        }
+
+        // Render Notes
+        function renderNotes() {
+            const notesContainer = document.getElementById('notesList');
+            
+            if (notes.length === 0) {
+                notesContainer.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📝</div><p>No notes yet</p></div>';
+            } else {
+                notesContainer.innerHTML = notes.map(note => `
+                    <div class="note-item" id="note-${note.id}">
+                        <div class="note-header">
+                            <span class="note-date">${new Date(note.date).toLocaleString()}</span>
+                            <div class="note-actions">
+                                <button class="btn btn-primary btn-small" onclick="editNote(${note.id})">✏️ Edit</button>
+                                <button class="btn btn-danger btn-small" onclick="deleteNote(${note.id})">🗑️ Delete</button>
+                            </div>
+                        </div>
+                        <div class="note-content">${note.content}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Export Notes Modal
+        function openExportNotesModal() {
+            if (notes.length === 0) {
+                alert('No notes to export');
+                return;
+            }
+            document.getElementById('exportNotesModal').classList.add('active');
+        }
+
+        function closeExportNotesModal() {
+            document.getElementById('exportNotesModal').classList.remove('active');
+        }
+
+        // Export Notes
+        function exportNotes(format) {
+            if (notes.length === 0) {
+                alert('No notes to export');
+                return;
+            }
+
+            let content, filename, type;
+
+            switch(format) {
+                case 'excel':
+                    exportNotesToExcel();
+                    break;
+                case 'csv':
+                    content = notesToCSV();
+                    filename = `notes_${currentUser}_${Date.now()}.csv`;
+                    type = 'text/csv';
+                    downloadFile(content, filename, type);
+                    break;
+                case 'json':
+                    content = JSON.stringify(notes, null, 2);
+                    filename = `notes_${currentUser}_${Date.now()}.json`;
+                    type = 'application/json';
+                    downloadFile(content, filename, type);
+                    break;
+                case 'txt':
+                    content = notesToText();
+                    filename = `notes_${currentUser}_${Date.now()}.txt`;
+                    type = 'text/plain';
+                    downloadFile(content, filename, type);
+                    break;
+                case 'pdf':
+                    content = notesToPDFText();
+                    filename = `notes_${currentUser}_${Date.now()}_PDF_Ready.txt`;
+                    type = 'text/plain';
+                    downloadFile(content, filename, type);
+                    break;
+            }
+
+            closeExportNotesModal();
+            showNotification(`Notes exported as ${format.toUpperCase()}! 📥`);
+        }
+
+        // Export Notes to Excel
+        function exportNotesToExcel() {
+            try {
+                if (typeof XLSX === 'undefined') {
+                    alert('Excel library not loaded. Please refresh the page and try again.');
+                    return;
+                }
+
+                const data = notes.map(note => ({
+                    'Date': new Date(note.date).toLocaleString(),
+                    'Note Content': note.content
+                }));
+
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.json_to_sheet(data);
+                
+                // Set column widths
+                ws['!cols'] = [
+                    { wch: 20 },  // Date column
+                    { wch: 80 }   // Content column
+                ];
+
+                XLSX.utils.book_append_sheet(wb, ws, 'Notes');
+
+                const filename = `notes_${currentUser}_${Date.now()}.xlsx`;
+                XLSX.writeFile(wb, filename);
+            } catch (error) {
+                console.error('Export error:', error);
+                alert('Error exporting to Excel: ' + error.message);
+            }
+        }
+
+        // Convert Notes to CSV
+        function notesToCSV() {
+            let csv = 'Date,Note Content\n';
+            notes.forEach(note => {
+                const date = new Date(note.date).toLocaleString();
+                const content = note.content.replace(/"/g, '""'); // Escape quotes
+                csv += `"${date}","${content}"\n`;
+            });
+            return csv;
+        }
+
+        // Convert Notes to Text
+        function notesToText() {
+            let text = `Notepad Export - ${currentUser}\n`;
+            text += `Export Date: ${new Date().toLocaleString()}\n`;
+            text += `Total Notes: ${notes.length}\n\n`;
+            text += '='.repeat(80) + '\n\n';
+
+            notes.forEach((note, index) => {
+                text += `NOTE ${index + 1}\n`;
+                text += `Date: ${new Date(note.date).toLocaleString()}\n`;
+                text += '-'.repeat(80) + '\n';
+                text += note.content + '\n';
+                text += '='.repeat(80) + '\n\n';
             });
 
-            saveTasks();
-            document.getElementById('quick-task').value = '';
-            document.getElementById('quick-priority').value = 'medium';
-            document.getElementById('quick-date').valueAsDate = new Date();
-            loadDashboard();
-            
-            // Show success message
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = '✅ Added!';
-            btn.style.background = '#28a745';
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = '';
-            }, 1000);
+            return text;
         }
 
-        function loadDashboard() {
-            const today = new Date().toISOString().split('T')[0];
-            const todayTasks = tasks.filter(t => t.dueDate === today && !t.completed);
-            const pendingTasks = tasks.filter(t => t.dueDate < today && !t.completed);
+        // Convert Notes to PDF-ready Text
+        function notesToPDFText() {
+            let text = `NOTEPAD EXPORT\n`;
+            text += `User: ${currentUser}\n`;
+            text += `Export Date: ${new Date().toLocaleString()}\n`;
+            text += `Total Notes: ${notes.length}\n\n`;
+            text += '━'.repeat(80) + '\n\n';
 
-            const todayList = document.getElementById('today-tasks-list');
-            if (todayTasks.length === 0) {
-                todayList.innerHTML = '<div class="empty-state"><div class="icon">✅</div><h3>No tasks today!</h3></div>';
-            } else {
-                todayList.innerHTML = todayTasks.map(t => `
-                    <div class="task-card ${t.priority}">
-                        <input type="checkbox" class="checkbox" onchange="completeTask(${t.id})">
-                        <div class="task-info">
-                            <div class="task-title">${t.text}</div>
-                            <div class="task-meta">
-                                <span class="priority-badge priority-${t.priority}">${t.priority.toUpperCase()}</span>
-                                <span>📅 Today</span>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
+            notes.forEach((note, index) => {
+                text += `📝 NOTE ${index + 1}\n`;
+                text += `📅 ${new Date(note.date).toLocaleString()}\n`;
+                text += '─'.repeat(80) + '\n\n';
+                text += note.content + '\n\n';
+                text += '━'.repeat(80) + '\n\n';
+            });
 
-            const pendingList = document.getElementById('pending-tasks-list');
-            if (pendingTasks.length === 0) {
-                pendingList.innerHTML = '<div class="empty-state"><div class="icon">🎉</div><h3>No overdue tasks!</h3></div>';
-            } else {
-                pendingList.innerHTML = pendingTasks.map(t => `
-                    <div class="task-card ${t.priority}">
-                        <input type="checkbox" class="checkbox" onchange="completeTask(${t.id})">
-                        <div class="task-info">
-                            <div class="task-title">${t.text}</div>
-                            <div class="task-meta">
-                                <span class="priority-badge priority-${t.priority}">${t.priority.toUpperCase()}</span>
-                                <span>📅 ${t.dueDate}</span>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
+            text += '\n\nThis file is formatted for easy conversion to PDF.\n';
+            text += 'You can copy this content to a word processor and save as PDF.';
+
+            return text;
+        }
+
+        // Switch Tab
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'alltasks') {
+                renderAllTasks();
+                updateFilterCounts();
             }
         }
 
-        function completeTask(id) {
-            const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.completed = true;
-                task.completedAt = new Date().toISOString();
-                saveTasks();
-                loadDashboard();
-            }
-        }
-
-        // Load Completed Tasks
-        function loadCompletedTasks() {
-            const completedTasks = tasks.filter(t => t.completed);
-            const completedList = document.getElementById('completed-tasks-list');
-
-            if (completedTasks.length === 0) {
-                completedList.innerHTML = '<div class="empty-state"><div class="icon">📋</div><h3>No completed tasks yet!</h3><p>Complete some tasks to see them here.</p></div>';
-            } else {
-                completedList.innerHTML = completedTasks.map(t => `
-                    <div class="completed-task-card">
-                        <input type="checkbox" class="checkbox" checked onchange="uncompleteTask(${t.id})">
-                        <div class="task-info">
-                            <div class="task-title">${t.text}</div>
-                            <div class="task-meta">
-                                <span class="completed-badge">COMPLETED</span>
-                                <span class="priority-badge priority-${t.priority}">${t.priority.toUpperCase()}</span>
-                                <span>📅 Due: ${t.dueDate}</span>
-                                <span>✅ Completed: ${new Date(t.completedAt).toLocaleDateString()}</span>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        // Uncomplete Task - Move back to dashboard/pending
-        function uncompleteTask(id) {
-            const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.completed = false;
-                task.completedAt = null;
-                saveTasks();
-                loadCompletedTasks();
-                
-                // Show notification
-                alert('✅ Task moved back to ' + (task.dueDate >= new Date().toISOString().split('T')[0] ? 'Today\'s Tasks' : 'Pending Tasks') + '!');
-            }
-        }
-
-        // Export Functions
+        // Export Modal
         function openExportModal() {
-            document.getElementById('export-modal').classList.add('show');
+            document.getElementById('exportModal').classList.add('active');
         }
 
         function closeExportModal() {
-            document.getElementById('export-modal').classList.remove('show');
+            document.getElementById('exportModal').classList.remove('active');
         }
 
-        function exportToExcel() {
-            if (tasks.length === 0) {
-                alert('No tasks to export!');
-                return;
-            }
-
-            const data = tasks.map(t => ({
-                'Task': t.text,
-                'Priority': t.priority.toUpperCase(),
-                'Due Date': t.dueDate,
-                'Status': t.completed ? 'Completed' : 'Pending',
-                'Created': new Date(t.createdAt).toLocaleDateString(),
-                'Completed': t.completed ? new Date(t.completedAt).toLocaleDateString() : '-'
-            }));
-
-            const ws = XLSX.utils.json_to_sheet(data);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Tasks");
-            XLSX.writeFile(wb, `${currentUser}_tasks_${new Date().toISOString().split('T')[0]}.xlsx`);
-            closeExportModal();
-        }
-
-        function exportToCSV() {
-            if (tasks.length === 0) {
-                alert('No tasks to export!');
-                return;
-            }
-
-            const headers = ['Task', 'Priority', 'Due Date', 'Status', 'Created', 'Completed'];
-            const rows = tasks.map(t => [
-                `"${t.text.replace(/"/g, '""')}"`,
-                t.priority,
-                t.dueDate,
-                t.completed ? 'Completed' : 'Pending',
-                new Date(t.createdAt).toLocaleDateString(),
-                t.completed ? new Date(t.completedAt).toLocaleDateString() : '-'
-            ]);
-
-            const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${currentUser}_tasks_${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-            closeExportModal();
-        }
-
-        function exportToJSON() {
-            if (tasks.length === 0) {
-                alert('No tasks to export!');
-                return;
-            }
-
-            const json = JSON.stringify(tasks, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${currentUser}_tasks_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            closeExportModal();
-        }
-
-        function exportToTXT() {
-            if (tasks.length === 0) {
-                alert('No tasks to export!');
-                return;
-            }
-
-            const txt = [
-                '═══════════════════════════════════════════',
-                `${currentUser.toUpperCase()}'S TASK LIST`,
-                `${new Date().toLocaleDateString()}`,
-                '═══════════════════════════════════════════',
-                '',
-                ...tasks.map((t, i) => [
-                    `${i + 1}. ${t.completed ? '✓' : '○'} ${t.text}`,
-                    `   Priority: ${t.priority.toUpperCase()}`,
-                    `   Due: ${t.dueDate}`,
-                    `   Status: ${t.completed ? 'Completed' : 'Pending'}`,
-                    t.completed ? `   Completed: ${new Date(t.completedAt).toLocaleDateString()}` : '',
-                    ''
-                ].join('\n')),
-                '═══════════════════════════════════════════'
-            ].join('\n');
-
-            const blob = new Blob([txt], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${currentUser}_tasks_${new Date().toISOString().split('T')[0]}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-            closeExportModal();
-        }
-
-        // Import Functions
+        // Import Modal
         function openImportModal() {
-            document.getElementById('import-modal').classList.add('show');
+            document.getElementById('importModal').classList.add('active');
         }
 
         function closeImportModal() {
-            document.getElementById('import-modal').classList.remove('show');
+            document.getElementById('importModal').classList.remove('active');
         }
 
-        function handleExcelUpload(event) {
-            const file = event.target.files[0];
+        // Export Tasks
+        function exportTasks(format) {
+            if (tasks.length === 0) {
+                alert('No tasks to export');
+                return;
+            }
+
+            let content, filename, type;
+
+            switch(format) {
+                case 'excel':
+                    exportToExcel();
+                    break;
+                case 'csv':
+                    content = tasksToCSV();
+                    filename = `tasks_${currentUser}_${Date.now()}.csv`;
+                    type = 'text/csv';
+                    downloadFile(content, filename, type);
+                    break;
+                case 'json':
+                    content = JSON.stringify(tasks, null, 2);
+                    filename = `tasks_${currentUser}_${Date.now()}.json`;
+                    type = 'application/json';
+                    downloadFile(content, filename, type);
+                    break;
+                case 'txt':
+                    content = tasksToText();
+                    filename = `tasks_${currentUser}_${Date.now()}.txt`;
+                    type = 'text/plain';
+                    downloadFile(content, filename, type);
+                    break;
+            }
+
+            closeExportModal();
+            showNotification(`Tasks exported as ${format.toUpperCase()}! 📥`);
+        }
+
+        // Export to Excel
+        function exportToExcel() {
+            try {
+                if (typeof XLSX === 'undefined') {
+                    alert('Excel library not loaded. Please refresh the page and try again.');
+                    return;
+                }
+
+                const data = tasks.map(task => ({
+                    'Task Name': task.name,
+                    'Priority': task.priority,
+                    'Due Date': task.dueDate,
+                    'Status': task.completed ? 'Completed' : 'Pending',
+                    'Completed Date': task.completedDate ? task.completedDate.split('T')[0] : ''
+                }));
+
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.json_to_sheet(data);
+                XLSX.utils.book_append_sheet(wb, ws, 'Tasks');
+
+                const filename = `tasks_${currentUser}_${Date.now()}.xlsx`;
+                XLSX.writeFile(wb, filename);
+            } catch (error) {
+                console.error('Export error:', error);
+                alert('Error exporting to Excel: ' + error.message);
+            }
+        }
+
+        // Import Excel
+        function importExcel() {
+            const fileInput = document.getElementById('excelFileInput');
+            const file = fileInput.files[0];
+
             if (!file) return;
 
+            if (typeof XLSX === 'undefined') {
+                alert('Excel library not loaded. Please refresh the page and try again.');
+                return;
+            }
+
             const reader = new FileReader();
+
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
 
-                    let imported = 0;
-                    jsonData.forEach(row => {
-                        const taskName = row['Task'] || row['Task Name'] || row['task'] || row['A'];
-                        const priority = (row['Priority'] || row['priority'] || row['B'] || 'medium').toLowerCase();
-                        const dueDate = row['Due Date'] || row['DueDate'] || row['due_date'] || row['C'];
-
-                        if (taskName) {
-                            tasks.push({
-                                id: Date.now() + imported,
-                                text: taskName,
-                                priority: ['high', 'medium', 'low'].includes(priority) ? priority : 'medium',
-                                dueDate: dueDate || new Date().toISOString().split('T')[0],
+                    let importedCount = 0;
+                    for (let i = 1; i < jsonData.length; i++) {
+                        const row = jsonData[i];
+                        
+                        if (row[0]) {
+                            const task = {
+                                id: Date.now() + i,
+                                name: row[0],
+                                priority: (row[1] || 'medium').toLowerCase(),
+                                dueDate: row[2] || new Date().toISOString().split('T')[0],
                                 completed: false,
-                                createdAt: new Date().toISOString()
-                            });
-                            imported++;
-                        }
-                    });
+                                completedDate: null
+                            };
 
-                    saveTasks();
-                    alert(`Successfully imported ${imported} tasks!`);
+                            if (!['high', 'medium', 'low'].includes(task.priority)) {
+                                task.priority = 'medium';
+                            }
+
+                            tasks.push(task);
+                            importedCount++;
+                        }
+                    }
+
+                    saveUserData();
+                    renderDashboard();
+                    renderAllTasks();
+                    updateTaskCount();
+                    updateFilterCounts();
                     closeImportModal();
-                    loadDashboard();
-                    event.target.value = '';
+                    showNotification(`${importedCount} tasks imported successfully! ✅`);
+                    
+                    fileInput.value = '';
                 } catch (error) {
-                    alert('Error reading Excel file. Please check the format.');
-                    console.error(error);
+                    console.error('Import error:', error);
+                    alert('Error importing Excel file: ' + error.message);
                 }
             };
+
             reader.readAsArrayBuffer(file);
         }
 
-        // Notes Functions
-        function loadNotes() {
-            const notesList = document.getElementById('notes-list');
-            if (notes.length === 0) {
-                notesList.innerHTML = '<div class="empty-state"><p>No notes yet!</p></div>';
-            } else {
-                notesList.innerHTML = notes.map(n => `
-                    <div class="note-item ${currentNoteId === n.id ? 'active' : ''}" onclick="selectNote(${n.id})">
-                        <h4>${n.title || 'Untitled'}</h4>
-                        <p>${new Date(n.updatedAt).toLocaleDateString()}</p>
-                    </div>
-                `).join('');
-            }
+        // Convert Tasks to CSV
+        function tasksToCSV() {
+            let csv = 'Task Name,Priority,Due Date,Status,Completed Date\n';
+            tasks.forEach(task => {
+                csv += `"${task.name}","${task.priority}","${task.dueDate}","${task.completed ? 'Completed' : 'Pending'}","${task.completedDate ? task.completedDate.split('T')[0] : ''}"\n`;
+            });
+            return csv;
         }
 
-        function createNewNote() {
-            currentNoteId = null;
-            document.getElementById('note-title').value = '';
-            document.getElementById('note-content').value = '';
-            document.querySelectorAll('.note-item').forEach(n => n.classList.remove('active'));
+        // Convert Tasks to Text
+        function tasksToText() {
+            let text = `Task Manager Export - ${currentUser}\n`;
+            text += `Export Date: ${new Date().toLocaleString()}\n`;
+            text += `Total Tasks: ${tasks.length}\n\n`;
+            text += '='.repeat(50) + '\n\n';
+
+            tasks.forEach((task, index) => {
+                text += `${index + 1}. ${task.name}\n`;
+                text += `   Priority: ${task.priority}\n`;
+                text += `   Due Date: ${task.dueDate}\n`;
+                text += `   Status: ${task.completed ? 'Completed' : 'Pending'}\n`;
+                if (task.completed) {
+                    text += `   Completed: ${task.completedDate.split('T')[0]}\n`;
+                }
+                text += '\n';
+            });
+
+            return text;
         }
 
-        function selectNote(id) {
-            const note = notes.find(n => n.id === id);
-            if (note) {
-                currentNoteId = id;
-                document.getElementById('note-title').value = note.title || '';
-                document.getElementById('note-content').value = note.content || '';
-                loadNotes();
-            }
+        // Download File
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type: type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
-        function saveNote() {
-            const title = document.getElementById('note-title').value.trim();
-            const content = document.getElementById('note-content').value.trim();
-            if (!title && !content) {
-                alert('Enter title or content!');
-                return;
-            }
+        // Show Notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
 
-            if (currentNoteId) {
-                const note = notes.find(n => n.id === currentNoteId);
-                note.title = title;
-                note.content = content;
-                note.updatedAt = new Date().toISOString();
-            } else {
-                notes.push({
-                    id: Date.now(),
-                    title,
-                    content,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                });
-                currentNoteId = notes[notes.length - 1].id;
-            }
-
-            saveNotes();
-            loadNotes();
-            alert('Note saved!');
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
 
-        function deleteNote() {
-            if (!currentNoteId) {
-                alert('No note selected!');
-                return;
-            }
-            if (confirm('Delete this note?')) {
-                notes = notes.filter(n => n.id !== currentNoteId);
-                saveNotes();
-                createNewNote();
-                loadNotes();
-            }
-        }
-
-        // Allow Enter key for quick add
+        // Enter key support for quick add
         document.addEventListener('DOMContentLoaded', function() {
-            const quickTask = document.getElementById('quick-task');
-            if (quickTask) {
-                quickTask.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        quickAddTask();
-                    }
-                });
-            }
+            document.getElementById('quickTaskName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    quickAddTask();
+                }
+            });
         });
-
-        init();
     </script>
-
+<noscript><img src="https://storage.abby.abb.com/akam/13/pixel_5c347c07?a=dD1jYzZjNGJjOWQ4NWZjOWIzYzRmYzAwZjExNmI2MmRiZjMxM2QzYzc5JmpzPW9mZg==" style="visibility: hidden; position: absolute; left: -999px; top: -999px;" /></noscript>
 </body></html>
