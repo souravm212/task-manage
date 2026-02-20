@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<!-- saved from url=(0249)https://storage.abby.abb.com/elabbyinternalassistant/conversations/47871c89-2e4b-4c23-a01e-dcc3e5406e47/output/TaskManager_Ultimate_Final.html?se=2026-02-20T13%3A21%3A59Z&sp=r&sv=2025-07-05&sr=b&sig=DdaYomuHLbOqha%2Bvk0x3%2BGsUqGxsSZZzpMkA1BkuTYo%3D -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager Pro - Ultimate Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Login Screen */
+        .login-container {
+            max-width: 450px;
+            margin: 80px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: #FF000F;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .login-container .subtitle {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 40px;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 18px;
+            margin-bottom: 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .login-container input:focus {
+            outline: none;
+            border-color: #FF000F;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 18px;
+            background: #FF000F;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-container button:hover {
+            background: #cc000c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,0,15,0.4);
+        }
+
+        /* Main App */
+        .app-container {
+            display: none;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container.show {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .top-nav {
+            background: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-nav .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .top-nav .logo h1 {
+            color: #FF000F;
+            font-size: 1.8em;
+        }
+
+        .top-nav .logo .version {
+            background: #FF000F;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+        }
+
+        .top-nav .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .top-nav .user-info h3 {
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .top-nav .user-info p {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .logout-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #5a6268;
+        }
+
+        /* Quick Add Task Bar */
+        .quick-add-bar {
+            background: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .quick-add-bar input, .quick-add-bar select {
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .quick-add-bar input:focus, .quick-add-bar select:focus {
+            outline: none;
+            border-color: #FF000F;
+        }
+
+        .quick-add-bar input[type="text"] {
+            flex: 2;
+        }
+
+        .quick-add-bar select {
+            flex: 0.5;
+        }
+
+        .quick-add-bar input[type="date"] {
+            flex: 0.7;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-panel h2 {
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5em;
+        }
+
+        .dashboard-panel.today h2 {
+            border-bottom-color: #FF000F;
+        }
+
+        .dashboard-panel.pending h2 {
+            border-bottom-color: #ffc107;
+        }
+
+        .task-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid #dee2e6;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .task-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .task-card.high {
+            border-left-color: #FF000F;
+            background: #fff5f5;
+        }
+
+        .task-card.medium {
+            border-left-color: #ffc107;
+            background: #fffef5;
+        }
+
+        .task-card.low {
+            border-left-color: #6764f6;
+            background: #f5f5ff;
+        }
+
+        .task-card .checkbox {
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .task-card .task-info {
+            flex: 1;
+        }
+
+        .task-card .task-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .task-card .task-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+
+        .priority-badge {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .priority-high { background: #ffe0e0; color: #FF000F; }
+        .priority-medium { background: #fff3cd; color: #ff8c00; }
+        .priority-low { background: #e4e7ff; color: #6764f6; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state .icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        /* Completed Tasks Section */
+        .completed-section {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .completed-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .completed-panel h2 {
+            color: #28a745;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #28a745;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5em;
+        }
+
+        .completed-task-card {
+            background: #d4edda;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid #28a745;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0.9;
+        }
+
+        .completed-task-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            opacity: 1;
+        }
+
+        .completed-task-card .task-title {
+            text-decoration: line-through;
+            color: #155724;
+        }
+
+        .completed-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        /* Notepad */
+        .notepad-container {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: calc(100vh - 300px);
+        }
+
+        .notes-sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+
+        .note-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid #6764f6;
+        }
+
+        .note-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .note-item.active {
+            background: #fff3f3;
+            border-left-color: #FF000F;
+        }
+
+        .note-item h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .note-item p {
+            color: #6c757d;
+            font-size: 0.85em;
+        }
+
+        .note-editor {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .note-editor input {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border: none;
+            border-bottom: 2px solid #e9ecef;
+            border-radius: 0;
+            padding: 10px 0;
+        }
+
+        .note-editor textarea {
+            flex: 1;
+            border: none;
+            resize: none;
+            font-size: 1.1em;
+            line-height: 1.8;
+            padding: 15px 0;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #FF000F;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn-primary {
+            background: #FF000F;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #cc000c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,0,15,0.3);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            background: white;
+            border-top: 2px solid #e9ecef;
+            display: flex;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #6c757d;
+        }
+
+        .nav-tab:hover {
+            background: #f8f9fa;
+        }
+
+        .nav-tab.active {
+            border-bottom-color: #FF000F;
+            color: #FF000F;
+            background: #fff3f3;
+        }
+
+        .nav-tab .icon {
+            font-size: 1.5em;
+        }
+
+        /* Floating Action Buttons */
+        .fab-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .fab {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5em;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .fab.export {
+            background: #28a745;
+            color: white;
+        }
+
+        .fab.import {
+            background: #6764f6;
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            min-height: 300px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .export-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .export-option {
+            padding: 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-option:hover {
+            border-color: #FF000F;
+            background: #fff3f3;
+        }
+
+        .export-option .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .file-upload {
+            border: 3px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: #FF000F;
+            background: #fff3f3;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .notepad-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .quick-add-bar {
+                flex-direction: column;
+            }
+            .quick-add-bar input, .quick-add-bar select {
+                width: 100%;
+            }
+        }
+    </style>
+    <script src="./index_files/xlsx.full.min.js.download"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="login-screen" style="display: block;">
+        <h1>📋 Task Manager Pro</h1>
+        <p class="subtitle">Ultimate Edition - Complete Control!</p>
+        <p style="color: #6c757d; margin-bottom: 30px; font-size: 0.9em;">
+            ✅ Quick Add • 📥 Excel Import • 📤 Export • ↩️ Undo Complete • 💾 Permanent Storage
+        </p>
+        <input type="text" id="username-input" placeholder="Enter your name">
+        <button onclick="login()">Start Managing Tasks</button>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container" id="main-app">
+        <div class="top-nav">
+            <div class="logo">
+                <h1>📋 Task Manager</h1>
+                <span class="version">Ultimate</span>
+            </div>
+            <div class="user-section">
+                <div class="user-info">
+                    <h3 id="top-username">Welcome</h3>
+                    <p id="top-date"></p>
+                </div>
+                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+            </div>
+        </div>
+
+        <!-- Quick Add Task Bar -->
+        <div class="quick-add-bar">
+            <input type="text" id="quick-task" placeholder="✨ Quick add task...">
+            <select id="quick-priority">
+                <option value="low">Low</option>
+                <option value="medium" selected="">Medium</option>
+                <option value="high">High</option>
+            </select>
+            <input type="date" id="quick-date">
+            <button class="btn-primary" onclick="quickAddTask()">➕ Add Task</button>
+        </div>
+
+        <div class="main-content">
+            <!-- Dashboard -->
+            <div class="content-section active" id="dashboard-section">
+                <div class="dashboard-grid">
+                    <div class="dashboard-panel today">
+                        <h2>📅 Today's Tasks</h2>
+                        <div id="today-tasks-list"></div>
+                    </div>
+                    <div class="dashboard-panel pending">
+                        <h2>⏳ Pending Tasks (Overdue)</h2>
+                        <div id="pending-tasks-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Tasks -->
+            <div class="content-section" id="completed-section">
+                <div class="completed-section">
+                    <div class="completed-panel">
+                        <h2>✅ Completed Tasks</h2>
+                        <p style="color: #6c757d; margin-bottom: 20px;">
+                            Click the checkbox to uncheck and move task back to dashboard/pending list
+                        </p>
+                        <div id="completed-tasks-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notepad -->
+            <div class="content-section" id="notepad-section">
+                <div class="notepad-container">
+                    <div class="notes-sidebar">
+                        <button class="btn-primary" style="width: 100%; margin-bottom: 25px;" onclick="createNewNote()">
+                            ➕ New Note
+                        </button>
+                        <h3>📝 My Notes</h3>
+                        <div id="notes-list"></div>
+                    </div>
+                    <div class="note-editor">
+                        <input type="text" id="note-title" placeholder="Note Title...">
+                        <textarea id="note-content" placeholder="Start typing your note..."></textarea>
+                        <div class="note-actions">
+                            <button class="btn-primary" onclick="saveNote()">💾 Save Note</button>
+                            <button class="btn-danger" onclick="deleteNote()">🗑️ Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-tab active" onclick="showSection(&#39;dashboard&#39;)">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-tab" onclick="showSection(&#39;completed&#39;)">
+                <span class="icon">✅</span>
+                <span>Completed</span>
+            </div>
+            <div class="nav-tab" onclick="showSection(&#39;notepad&#39;)">
+                <span class="icon">📝</span>
+                <span>Notepad</span>
+            </div>
+        </div>
+
+        <!-- Floating Action Buttons -->
+        <div class="fab-container">
+            <button class="fab export" onclick="openExportModal()" title="Export Tasks">📤</button>
+            <button class="fab import" onclick="openImportModal()" title="Import Tasks">📥</button>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal" id="export-modal">
+        <div class="modal-content">
+            <h2>📤 Export Tasks</h2>
+            <div class="export-options">
+                <div class="export-option" onclick="exportToExcel()">
+                    <div class="icon">📊</div>
+                    <h3>Excel</h3>
+                    <p>Export as .xlsx</p>
+                </div>
+                <div class="export-option" onclick="exportToCSV()">
+                    <div class="icon">📄</div>
+                    <h3>CSV</h3>
+                    <p>Export as .csv</p>
+                </div>
+                <div class="export-option" onclick="exportToJSON()">
+                    <div class="icon">💾</div>
+                    <h3>JSON</h3>
+                    <p>Export as .json</p>
+                </div>
+                <div class="export-option" onclick="exportToTXT()">
+                    <div class="icon">📝</div>
+                    <h3>Text</h3>
+                    <p>Export as .txt</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeExportModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal" id="import-modal">
+        <div class="modal-content">
+            <h2>📥 Import Tasks</h2>
+            <p style="color: #6c757d; margin-bottom: 20px;">
+                Upload an Excel file with columns: Task, Priority, Due Date
+            </p>
+            <div class="file-upload" onclick="document.getElementById(&#39;excel-file&#39;).click()">
+                <input type="file" id="excel-file" accept=".xlsx,.xls" onchange="handleExcelUpload(event)">
+                <div style="font-size: 3em; margin-bottom: 15px;">📁</div>
+                <h3>Click to Upload Excel File</h3>
+                <p style="color: #6c757d; margin-top: 10px;">Supports .xlsx and .xls files</p>
+            </div>
+            <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                <h4 style="margin-bottom: 10px;">Excel Format:</h4>
+                <p style="color: #6c757d; font-size: 0.9em;">
+                    Column A: Task Name<br>
+                    Column B: Priority (high/medium/low)<br>
+                    Column C: Due Date (YYYY-MM-DD)
+                </p>
+            </div>
+            <div class="modal-actions" style="margin-top: 20px;">
+                <button class="btn-secondary" onclick="closeImportModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let tasks = [];
+        let notes = [];
+        let currentNoteId = null;
+
+        function init() {
+            const savedUser = localStorage.getItem('taskManagerUser');
+            if (savedUser) {
+                currentUser = savedUser;
+                loadUserData();
+                showMainApp();
+            } else {
+                showLoginScreen();
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('username-input').value.trim();
+            if (!username) {
+                alert('Please enter your name!');
+                return;
+            }
+            currentUser = username;
+            localStorage.setItem('taskManagerUser', username);
+            loadUserData();
+            showMainApp();
+        }
+
+        function logout() {
+            if (confirm('Logout? Your data is saved.')) {
+                localStorage.removeItem('taskManagerUser');
+                currentUser = null;
+                showLoginScreen();
+            }
+        }
+
+        function showLoginScreen() {
+            document.getElementById('login-screen').style.display = 'block';
+            document.getElementById('main-app').classList.remove('show');
+        }
+
+        function showMainApp() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').classList.add('show');
+            document.getElementById('top-username').textContent = `Welcome, ${currentUser}!`;
+            document.getElementById('top-date').textContent = new Date().toLocaleDateString('en-US', 
+                { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('quick-date').valueAsDate = new Date();
+            loadDashboard();
+            loadNotes();
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
+            document.getElementById(`${section}-section`).classList.add('active');
+            event.target.closest('.nav-tab').classList.add('active');
+            
+            if (section === 'dashboard') {
+                loadDashboard();
+            } else if (section === 'completed') {
+                loadCompletedTasks();
+            }
+        }
+
+        function loadUserData() {
+            const userTasks = localStorage.getItem(`tasks_${currentUser}`);
+            const userNotes = localStorage.getItem(`notes_${currentUser}`);
+            tasks = userTasks ? JSON.parse(userTasks) : [];
+            notes = userNotes ? JSON.parse(userNotes) : [];
+        }
+
+        function saveTasks() {
+            localStorage.setItem(`tasks_${currentUser}`, JSON.stringify(tasks));
+        }
+
+        function saveNotes() {
+            localStorage.setItem(`notes_${currentUser}`, JSON.stringify(notes));
+        }
+
+        // Quick Add Task
+        function quickAddTask() {
+            const taskText = document.getElementById('quick-task').value.trim();
+            const priority = document.getElementById('quick-priority').value;
+            const dueDate = document.getElementById('quick-date').value;
+
+            if (!taskText) {
+                alert('Please enter a task!');
+                return;
+            }
+
+            tasks.push({
+                id: Date.now(),
+                text: taskText,
+                priority: priority,
+                dueDate: dueDate,
+                completed: false,
+                createdAt: new Date().toISOString()
+            });
+
+            saveTasks();
+            document.getElementById('quick-task').value = '';
+            document.getElementById('quick-priority').value = 'medium';
+            document.getElementById('quick-date').valueAsDate = new Date();
+            loadDashboard();
+            
+            // Show success message
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Added!';
+            btn.style.background = '#28a745';
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+            }, 1000);
+        }
+
+        function loadDashboard() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayTasks = tasks.filter(t => t.dueDate === today && !t.completed);
+            const pendingTasks = tasks.filter(t => t.dueDate < today && !t.completed);
+
+            const todayList = document.getElementById('today-tasks-list');
+            if (todayTasks.length === 0) {
+                todayList.innerHTML = '<div class="empty-state"><div class="icon">✅</div><h3>No tasks today!</h3></div>';
+            } else {
+                todayList.innerHTML = todayTasks.map(t => `
+                    <div class="task-card ${t.priority}">
+                        <input type="checkbox" class="checkbox" onchange="completeTask(${t.id})">
+                        <div class="task-info">
+                            <div class="task-title">${t.text}</div>
+                            <div class="task-meta">
+                                <span class="priority-badge priority-${t.priority}">${t.priority.toUpperCase()}</span>
+                                <span>📅 Today</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const pendingList = document.getElementById('pending-tasks-list');
+            if (pendingTasks.length === 0) {
+                pendingList.innerHTML = '<div class="empty-state"><div class="icon">🎉</div><h3>No overdue tasks!</h3></div>';
+            } else {
+                pendingList.innerHTML = pendingTasks.map(t => `
+                    <div class="task-card ${t.priority}">
+                        <input type="checkbox" class="checkbox" onchange="completeTask(${t.id})">
+                        <div class="task-info">
+                            <div class="task-title">${t.text}</div>
+                            <div class="task-meta">
+                                <span class="priority-badge priority-${t.priority}">${t.priority.toUpperCase()}</span>
+                                <span>📅 ${t.dueDate}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function completeTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = true;
+                task.completedAt = new Date().toISOString();
+                saveTasks();
+                loadDashboard();
+            }
+        }
+
+        // Load Completed Tasks
+        function loadCompletedTasks() {
+            const completedTasks = tasks.filter(t => t.completed);
+            const completedList = document.getElementById('completed-tasks-list');
+
+            if (completedTasks.length === 0) {
+                completedList.innerHTML = '<div class="empty-state"><div class="icon">📋</div><h3>No completed tasks yet!</h3><p>Complete some tasks to see them here.</p></div>';
+            } else {
+                completedList.innerHTML = completedTasks.map(t => `
+                    <div class="completed-task-card">
+                        <input type="checkbox" class="checkbox" checked onchange="uncompleteTask(${t.id})">
+                        <div class="task-info">
+                            <div class="task-title">${t.text}</div>
+                            <div class="task-meta">
+                                <span class="completed-badge">COMPLETED</span>
+                                <span class="priority-badge priority-${t.priority}">${t.priority.toUpperCase()}</span>
+                                <span>📅 Due: ${t.dueDate}</span>
+                                <span>✅ Completed: ${new Date(t.completedAt).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Uncomplete Task - Move back to dashboard/pending
+        function uncompleteTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = false;
+                task.completedAt = null;
+                saveTasks();
+                loadCompletedTasks();
+                
+                // Show notification
+                alert('✅ Task moved back to ' + (task.dueDate >= new Date().toISOString().split('T')[0] ? 'Today\'s Tasks' : 'Pending Tasks') + '!');
+            }
+        }
+
+        // Export Functions
+        function openExportModal() {
+            document.getElementById('export-modal').classList.add('show');
+        }
+
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.remove('show');
+        }
+
+        function exportToExcel() {
+            if (tasks.length === 0) {
+                alert('No tasks to export!');
+                return;
+            }
+
+            const data = tasks.map(t => ({
+                'Task': t.text,
+                'Priority': t.priority.toUpperCase(),
+                'Due Date': t.dueDate,
+                'Status': t.completed ? 'Completed' : 'Pending',
+                'Created': new Date(t.createdAt).toLocaleDateString(),
+                'Completed': t.completed ? new Date(t.completedAt).toLocaleDateString() : '-'
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Tasks");
+            XLSX.writeFile(wb, `${currentUser}_tasks_${new Date().toISOString().split('T')[0]}.xlsx`);
+            closeExportModal();
+        }
+
+        function exportToCSV() {
+            if (tasks.length === 0) {
+                alert('No tasks to export!');
+                return;
+            }
+
+            const headers = ['Task', 'Priority', 'Due Date', 'Status', 'Created', 'Completed'];
+            const rows = tasks.map(t => [
+                `"${t.text.replace(/"/g, '""')}"`,
+                t.priority,
+                t.dueDate,
+                t.completed ? 'Completed' : 'Pending',
+                new Date(t.createdAt).toLocaleDateString(),
+                t.completed ? new Date(t.completedAt).toLocaleDateString() : '-'
+            ]);
+
+            const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentUser}_tasks_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            closeExportModal();
+        }
+
+        function exportToJSON() {
+            if (tasks.length === 0) {
+                alert('No tasks to export!');
+                return;
+            }
+
+            const json = JSON.stringify(tasks, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentUser}_tasks_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            closeExportModal();
+        }
+
+        function exportToTXT() {
+            if (tasks.length === 0) {
+                alert('No tasks to export!');
+                return;
+            }
+
+            const txt = [
+                '═══════════════════════════════════════════',
+                `${currentUser.toUpperCase()}'S TASK LIST`,
+                `${new Date().toLocaleDateString()}`,
+                '═══════════════════════════════════════════',
+                '',
+                ...tasks.map((t, i) => [
+                    `${i + 1}. ${t.completed ? '✓' : '○'} ${t.text}`,
+                    `   Priority: ${t.priority.toUpperCase()}`,
+                    `   Due: ${t.dueDate}`,
+                    `   Status: ${t.completed ? 'Completed' : 'Pending'}`,
+                    t.completed ? `   Completed: ${new Date(t.completedAt).toLocaleDateString()}` : '',
+                    ''
+                ].join('\n')),
+                '═══════════════════════════════════════════'
+            ].join('\n');
+
+            const blob = new Blob([txt], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentUser}_tasks_${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            closeExportModal();
+        }
+
+        // Import Functions
+        function openImportModal() {
+            document.getElementById('import-modal').classList.add('show');
+        }
+
+        function closeImportModal() {
+            document.getElementById('import-modal').classList.remove('show');
+        }
+
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+                    let imported = 0;
+                    jsonData.forEach(row => {
+                        const taskName = row['Task'] || row['Task Name'] || row['task'] || row['A'];
+                        const priority = (row['Priority'] || row['priority'] || row['B'] || 'medium').toLowerCase();
+                        const dueDate = row['Due Date'] || row['DueDate'] || row['due_date'] || row['C'];
+
+                        if (taskName) {
+                            tasks.push({
+                                id: Date.now() + imported,
+                                text: taskName,
+                                priority: ['high', 'medium', 'low'].includes(priority) ? priority : 'medium',
+                                dueDate: dueDate || new Date().toISOString().split('T')[0],
+                                completed: false,
+                                createdAt: new Date().toISOString()
+                            });
+                            imported++;
+                        }
+                    });
+
+                    saveTasks();
+                    alert(`Successfully imported ${imported} tasks!`);
+                    closeImportModal();
+                    loadDashboard();
+                    event.target.value = '';
+                } catch (error) {
+                    alert('Error reading Excel file. Please check the format.');
+                    console.error(error);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Notes Functions
+        function loadNotes() {
+            const notesList = document.getElementById('notes-list');
+            if (notes.length === 0) {
+                notesList.innerHTML = '<div class="empty-state"><p>No notes yet!</p></div>';
+            } else {
+                notesList.innerHTML = notes.map(n => `
+                    <div class="note-item ${currentNoteId === n.id ? 'active' : ''}" onclick="selectNote(${n.id})">
+                        <h4>${n.title || 'Untitled'}</h4>
+                        <p>${new Date(n.updatedAt).toLocaleDateString()}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function createNewNote() {
+            currentNoteId = null;
+            document.getElementById('note-title').value = '';
+            document.getElementById('note-content').value = '';
+            document.querySelectorAll('.note-item').forEach(n => n.classList.remove('active'));
+        }
+
+        function selectNote(id) {
+            const note = notes.find(n => n.id === id);
+            if (note) {
+                currentNoteId = id;
+                document.getElementById('note-title').value = note.title || '';
+                document.getElementById('note-content').value = note.content || '';
+                loadNotes();
+            }
+        }
+
+        function saveNote() {
+            const title = document.getElementById('note-title').value.trim();
+            const content = document.getElementById('note-content').value.trim();
+            if (!title && !content) {
+                alert('Enter title or content!');
+                return;
+            }
+
+            if (currentNoteId) {
+                const note = notes.find(n => n.id === currentNoteId);
+                note.title = title;
+                note.content = content;
+                note.updatedAt = new Date().toISOString();
+            } else {
+                notes.push({
+                    id: Date.now(),
+                    title,
+                    content,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                });
+                currentNoteId = notes[notes.length - 1].id;
+            }
+
+            saveNotes();
+            loadNotes();
+            alert('Note saved!');
+        }
+
+        function deleteNote() {
+            if (!currentNoteId) {
+                alert('No note selected!');
+                return;
+            }
+            if (confirm('Delete this note?')) {
+                notes = notes.filter(n => n.id !== currentNoteId);
+                saveNotes();
+                createNewNote();
+                loadNotes();
+            }
+        }
+
+        // Allow Enter key for quick add
+        document.addEventListener('DOMContentLoaded', function() {
+            const quickTask = document.getElementById('quick-task');
+            if (quickTask) {
+                quickTask.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        quickAddTask();
+                    }
+                });
+            }
+        });
+
+        init();
+    </script>
+
+</body></html>
