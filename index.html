@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- saved from url=(0241)https://storage.abby.abb.com/elabbyinternalassistant/conversations/caa979ac-2c9d-4428-b90e-2300ee785939/output/TaskManager_v3.0_FINAL.html?se=2026-02-20T15%3A42%3A36Z&sp=r&sv=2025-07-05&sr=b&sig=f1FqIq4v9DXV6eoDzlBiExiuvhhpze9a992moJKKfh8%3D -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager Pro - Ultimate Edition</title>
     
     <!-- SheetJS Library for Excel Import/Export -->
-    <script src="./Task Manager Pro - Ultimate Edition_files/xlsx.full.min.js.download"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
         * {
@@ -279,7 +279,6 @@
             color: #764ba2;
         }
 
-        /* Filter Section */
         .filter-section {
             display: flex;
             gap: 10px;
@@ -335,7 +334,6 @@
             color: white;
         }
 
-        /* All Tasks Table Styles */
         .all-tasks-container {
             overflow-x: auto;
         }
@@ -803,42 +801,42 @@
             margin-left: 10px;
         }
     </style>
-<script>bazadebezolkohpepadr="1546943932"</script><script type="text/javascript" src="./Task Manager Pro - Ultimate Edition_files/5c347c07" defer=""></script></head>
+</head>
 <body>
     <!-- Login Screen -->
-    <div id="loginScreen" class="login-screen hidden">
+    <div id="loginScreen" class="login-screen">
         <div class="login-box">
             <h2>📋 Task Manager Pro</h2>
-            <p style="text-align: center; color: #7f8c8d; margin-bottom: 20px;">Ultimate Edition v3.0 - FINAL</p>
-            <input type="text" id="usernameInput" placeholder="Enter your name">
+            <p style="text-align: center; color: #7f8c8d; margin-bottom: 20px;">Ultimate Edition v3.0 - PERMANENT</p>
+            <input type="text" id="usernameInput" placeholder="Enter your name" />
             <button onclick="login()">Start Managing Tasks</button>
         </div>
     </div>
 
     <!-- Main App -->
-    <div id="mainApp" class="">
+    <div id="mainApp" class="hidden">
         <div class="container">
             <!-- Header -->
             <div class="header">
                 <div>
-                    <h1>📋 <span id="userName">Sourav</span>, Welcome to Task Manager</h1>
-                    <p style="color: #7f8c8d;">Manage your tasks efficiently</p>
+                    <h1>📋 <span id="userName"></span>, Welcome to Task Manager</h1>
+                    <p style="color: #7f8c8d;">Manage your tasks efficiently - Never Expires!</p>
                 </div>
                 <div class="user-info">
-                    <span style="color: #7f8c8d;">Version 3.0 - FINAL</span>
+                    <span style="color: #7f8c8d;">Version 3.0 - PERMANENT</span>
                     <button class="logout-btn" onclick="logout()">Logout</button>
                 </div>
             </div>
 
             <!-- Quick Add Task -->
             <div class="quick-add">
-                <input type="text" id="quickTaskName" placeholder="Task name...">
+                <input type="text" id="quickTaskName" placeholder="Task name..." />
                 <select id="quickTaskPriority">
                     <option value="high">High Priority</option>
-                    <option value="medium" selected="">Medium Priority</option>
+                    <option value="medium" selected>Medium Priority</option>
                     <option value="low">Low Priority</option>
                 </select>
-                <input type="date" id="quickTaskDate">
+                <input type="date" id="quickTaskDate" />
                 <button onclick="quickAddTask()">➕ Add Task</button>
             </div>
 
@@ -846,10 +844,10 @@
             <div class="content">
                 <!-- Tabs -->
                 <div class="tabs">
-                    <button class="tab active" onclick="switchTab(&#39;dashboard&#39;)">📊 Dashboard</button>
-                    <button class="tab" onclick="switchTab(&#39;alltasks&#39;)">📋 All Tasks <span id="taskCount" class="task-count">16</span></button>
-                    <button class="tab" onclick="switchTab(&#39;completed&#39;)">✅ Completed</button>
-                    <button class="tab" onclick="switchTab(&#39;notepad&#39;)">📝 Notepad</button>
+                    <button class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+                    <button class="tab" onclick="switchTab('alltasks')">📋 All Tasks <span id="taskCount" class="task-count">0</span></button>
+                    <button class="tab" onclick="switchTab('completed')">✅ Completed</button>
+                    <button class="tab" onclick="switchTab('notepad')">📝 Notepad</button>
                 </div>
 
                 <!-- Dashboard Tab -->
@@ -857,35 +855,11 @@
                     <div class="dashboard-grid">
                         <div class="task-panel">
                             <h3>📅 Today's Tasks</h3>
-                            <div id="todayTasks">
-                <div class="task-item medium">
-                    <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752350)">
-                    <div class="task-details">
-                        <div class="task-name">Team meeting preparation</div>
-                        <div class="task-meta">
-                            <span class="priority-badge priority-medium">medium</span>
-                            <span> • Due: Today</span>
-                            
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="task-item high">
-                    <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598931383)">
-                    <div class="task-details">
-                        <div class="task-name">test 2-single added</div>
-                        <div class="task-meta">
-                            <span class="priority-badge priority-high">high</span>
-                            <span> • Due: Today</span>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
+                            <div id="todayTasks"></div>
                         </div>
                         <div class="task-panel">
                             <h3>⏰ Pending Tasks</h3>
-                            <div id="pendingTasks"><div class="empty-state"><div class="empty-state-icon">✨</div><p>No pending tasks</p></div></div>
+                            <div id="pendingTasks"></div>
                         </div>
                     </div>
                 </div>
@@ -895,22 +869,22 @@
                     <!-- Filter Section -->
                     <div class="filter-section">
                         <span class="filter-label">📅 Filter by Date:</span>
-                        <button class="filter-btn active" onclick="filterTasks(&#39;all&#39;)" id="filter-all">
-                            All Tasks <span class="filter-count" id="count-all">16</span>
+                        <button class="filter-btn active" onclick="filterTasks('all')" id="filter-all">
+                            All Tasks <span class="filter-count" id="count-all">0</span>
                         </button>
-                        <button class="filter-btn" onclick="filterTasks(&#39;today&#39;)" id="filter-today">
-                            Today <span class="filter-count" id="count-today">2</span>
+                        <button class="filter-btn" onclick="filterTasks('today')" id="filter-today">
+                            Today <span class="filter-count" id="count-today">0</span>
                         </button>
-                        <button class="filter-btn" onclick="filterTasks(&#39;tomorrow&#39;)" id="filter-tomorrow">
-                            Tomorrow <span class="filter-count" id="count-tomorrow">1</span>
+                        <button class="filter-btn" onclick="filterTasks('tomorrow')" id="filter-tomorrow">
+                            Tomorrow <span class="filter-count" id="count-tomorrow">0</span>
                         </button>
-                        <button class="filter-btn" onclick="filterTasks(&#39;dayafter&#39;)" id="filter-dayafter">
-                            Day After <span class="filter-count" id="count-dayafter">2</span>
+                        <button class="filter-btn" onclick="filterTasks('dayafter')" id="filter-dayafter">
+                            Day After <span class="filter-count" id="count-dayafter">0</span>
                         </button>
-                        <button class="filter-btn" onclick="filterTasks(&#39;future&#39;)" id="filter-future">
-                            Future <span class="filter-count" id="count-future">10</span>
+                        <button class="filter-btn" onclick="filterTasks('future')" id="filter-future">
+                            Future <span class="filter-count" id="count-future">0</span>
                         </button>
-                        <button class="filter-btn" onclick="filterTasks(&#39;overdue&#39;)" id="filter-overdue">
+                        <button class="filter-btn" onclick="filterTasks('overdue')" id="filter-overdue">
                             Overdue <span class="filter-count" id="count-overdue">0</span>
                         </button>
                     </div>
@@ -920,7 +894,7 @@
                         <div class="toggle-switch" id="editToggle" onclick="toggleEditMode()">
                             <div class="toggle-slider"></div>
                         </div>
-                        <span id="editModeText" style="color: rgb(127, 140, 141);">OFF</span>
+                        <span id="editModeText" style="color: #7f8c8d;">OFF</span>
                     </div>
                     <div class="all-tasks-container">
                         <table class="tasks-table">
@@ -934,166 +908,7 @@
                                 </tr>
                             </thead>
                             <tbody id="allTasksBody">
-                        <tr id="task-row-1771598752349">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" checked="" onchange="toggleTask(1771598752349)">
-                            </td>
-                            <td>Complete project report- editied</td>
-                            <td><span class="priority-badge priority-high">high</span></td>
-                            <td>Feb 19, 2026</td>
-                            <td>✅ Completed</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752350">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752350)">
-                            </td>
-                            <td>Team meeting preparation</td>
-                            <td><span class="priority-badge priority-medium">medium</span></td>
-                            <td>Today</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752351">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752351)">
-                            </td>
-                            <td>Review documentation</td>
-                            <td><span class="priority-badge priority-low">low</span></td>
-                            <td>Tomorrow</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752352">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752352)">
-                            </td>
-                            <td>Client presentation</td>
-                            <td><span class="priority-badge priority-high">high</span></td>
-                            <td>Feb 22, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752353">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752353)">
-                            </td>
-                            <td>Update project timeline</td>
-                            <td><span class="priority-badge priority-medium">medium</span></td>
-                            <td>Feb 22, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752354">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752354)">
-                            </td>
-                            <td>Code review session</td>
-                            <td><span class="priority-badge priority-high">high</span></td>
-                            <td>Feb 23, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752355">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752355)">
-                            </td>
-                            <td>Budget planning meeting</td>
-                            <td><span class="priority-badge priority-medium">medium</span></td>
-                            <td>Feb 24, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752356">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752356)">
-                            </td>
-                            <td>Send follow-up emails</td>
-                            <td><span class="priority-badge priority-low">low</span></td>
-                            <td>Feb 24, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752357">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752357)">
-                            </td>
-                            <td>Prepare monthly report</td>
-                            <td><span class="priority-badge priority-high">high</span></td>
-                            <td>Feb 25, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752358">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752358)">
-                            </td>
-                            <td>Team building activity</td>
-                            <td><span class="priority-badge priority-low">low</span></td>
-                            <td>Feb 26, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752359">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752359)">
-                            </td>
-                            <td>System maintenance check</td>
-                            <td><span class="priority-badge priority-medium">medium</span></td>
-                            <td>Feb 27, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752360">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752360)">
-                            </td>
-                            <td>Training session</td>
-                            <td><span class="priority-badge priority-low">low</span></td>
-                            <td>Feb 28, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752361">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752361)">
-                            </td>
-                            <td>Quarterly review</td>
-                            <td><span class="priority-badge priority-high">high</span></td>
-                            <td>Mar 1, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752362">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752362)">
-                            </td>
-                            <td>Update stakeholders</td>
-                            <td><span class="priority-badge priority-medium">medium</span></td>
-                            <td>Mar 1, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598752363">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598752363)">
-                            </td>
-                            <td>Archive old files</td>
-                            <td><span class="priority-badge priority-low">low</span></td>
-                            <td>Mar 1, 2026</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    
-                        <tr id="task-row-1771598931383">
-                            <td>
-                                <input type="checkbox" class="task-checkbox" onchange="toggleTask(1771598931383)">
-                            </td>
-                            <td>test 2-single added</td>
-                            <td><span class="priority-badge priority-high">high</span></td>
-                            <td>Today</td>
-                            <td>⏳ Pending</td>
-                        </tr>
-                    </tbody>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -1101,19 +916,7 @@
                 <!-- Completed Tab -->
                 <div id="completedTab" class="tab-content">
                     <h3 style="margin-bottom: 20px;">✅ Completed Tasks</h3>
-                    <div id="completedTasks">
-                <div class="task-item high">
-                    <input type="checkbox" class="task-checkbox" checked="" onchange="toggleTask(1771598752349)">
-                    <div class="task-details">
-                        <div class="task-name">Complete project report- editied</div>
-                        <div class="task-meta">
-                            <span class="priority-badge priority-high">high</span>
-                            <span> • Due: Feb 19, 2026</span>
-                             • Completed: Today
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    <div id="completedTasks"></div>
                 </div>
 
                 <!-- Notepad Tab -->
@@ -1125,19 +928,7 @@
                         </div>
                         <textarea id="noteInput" class="note-input" placeholder="Write your notes here..."></textarea>
                         <button class="btn btn-primary" onclick="saveNote()">💾 Save Note</button>
-                        <div id="notesList">
-                    <div class="note-item" id="note-1771597818841">
-                        <div class="note-header">
-                            <span class="note-date">20/2/2026, 8:17:36 pm</span>
-                            <div class="note-actions">
-                                <button class="btn btn-primary btn-small" onclick="editNote(1771597818841)">✏️ Edit</button>
-                                <button class="btn btn-danger btn-small" onclick="deleteNote(1771597818841)">🗑️ Delete</button>
-                            </div>
-                        </div>
-                        <div class="note-content">saved test 2- edited
-hshs</div>
-                    </div>
-                </div>
+                        <div id="notesList"></div>
                     </div>
                 </div>
             </div>
@@ -1158,16 +949,16 @@ hshs</div>
                 <p style="color: #7f8c8d;">Choose export format</p>
             </div>
             <div class="export-options">
-                <div class="export-option" onclick="exportTasks(&#39;excel&#39;)">
+                <div class="export-option" onclick="exportTasks('excel')">
                     📊 Export to Excel (.xlsx)
                 </div>
-                <div class="export-option" onclick="exportTasks(&#39;csv&#39;)">
+                <div class="export-option" onclick="exportTasks('csv')">
                     📄 Export to CSV (.csv)
                 </div>
-                <div class="export-option" onclick="exportTasks(&#39;json&#39;)">
+                <div class="export-option" onclick="exportTasks('json')">
                     📋 Export to JSON (.json)
                 </div>
-                <div class="export-option" onclick="exportTasks(&#39;txt&#39;)">
+                <div class="export-option" onclick="exportTasks('txt')">
                     📝 Export to Text (.txt)
                 </div>
             </div>
@@ -1185,19 +976,19 @@ hshs</div>
                 <p style="color: #7f8c8d;">Choose export format for your notes</p>
             </div>
             <div class="export-options">
-                <div class="export-option" onclick="exportNotes(&#39;excel&#39;)">
+                <div class="export-option" onclick="exportNotes('excel')">
                     📊 Export to Excel (.xlsx)
                 </div>
-                <div class="export-option" onclick="exportNotes(&#39;csv&#39;)">
+                <div class="export-option" onclick="exportNotes('csv')">
                     📄 Export to CSV (.csv)
                 </div>
-                <div class="export-option" onclick="exportNotes(&#39;json&#39;)">
+                <div class="export-option" onclick="exportNotes('json')">
                     📋 Export to JSON (.json)
                 </div>
-                <div class="export-option" onclick="exportNotes(&#39;txt&#39;)">
+                <div class="export-option" onclick="exportNotes('txt')">
                     📝 Export to Text (.txt)
                 </div>
-                <div class="export-option" onclick="exportNotes(&#39;pdf&#39;)">
+                <div class="export-option" onclick="exportNotes('pdf')">
                     📄 Export to PDF-ready Text
                 </div>
             </div>
@@ -1217,8 +1008,8 @@ hshs</div>
                     Format: Column A = Task Name, Column B = Priority (high/medium/low), Column C = Due Date (YYYY-MM-DD)
                 </p>
             </div>
-            <input type="file" id="excelFileInput" accept=".xlsx,.xls" onchange="importExcel()">
-            <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="document.getElementById(&#39;excelFileInput&#39;).click()">
+            <input type="file" id="excelFileInput" accept=".xlsx,.xls" onchange="importExcel()" />
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="document.getElementById('excelFileInput').click()">
                 📁 Choose Excel File
             </button>
             <div class="modal-buttons">
@@ -1264,7 +1055,13 @@ hshs</div>
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 localStorage.removeItem('currentUser');
-                location.reload();
+                currentUser = '';
+                tasks = [];
+                notes = [];
+                document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('usernameInput').value = '';
+                showNotification('Logged out successfully! 👋');
             }
         }
 
@@ -1297,19 +1094,29 @@ hshs</div>
 
         // Get Date Helpers
         function getToday() {
-            return new Date().toISOString().split('T')[0];
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         function getTomorrow() {
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
-            return tomorrow.toISOString().split('T')[0];
+            const year = tomorrow.getFullYear();
+            const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+            const day = String(tomorrow.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         function getDayAfter() {
             const dayAfter = new Date();
             dayAfter.setDate(dayAfter.getDate() + 2);
-            return dayAfter.toISOString().split('T')[0];
+            const year = dayAfter.getFullYear();
+            const month = String(dayAfter.getMonth() + 1).padStart(2, '0');
+            const day = String(dayAfter.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         // Filter Tasks
@@ -1608,14 +1415,17 @@ hshs</div>
 
         // Format Date
         function formatDate(dateString) {
-            const date = new Date(dateString);
+            const date = new Date(dateString + 'T00:00:00');
             const today = new Date();
+            today.setHours(0, 0, 0, 0);
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
 
-            if (dateString === today.toISOString().split('T')[0]) {
+            const dateOnly = new Date(dateString + 'T00:00:00');
+            
+            if (dateString === getToday()) {
                 return 'Today';
-            } else if (dateString === tomorrow.toISOString().split('T')[0]) {
+            } else if (dateString === getTomorrow()) {
                 return 'Tomorrow';
             } else {
                 return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -1788,10 +1598,9 @@ hshs</div>
                 const wb = XLSX.utils.book_new();
                 const ws = XLSX.utils.json_to_sheet(data);
                 
-                // Set column widths
                 ws['!cols'] = [
-                    { wch: 20 },  // Date column
-                    { wch: 80 }   // Content column
+                    { wch: 20 },
+                    { wch: 80 }
                 ];
 
                 XLSX.utils.book_append_sheet(wb, ws, 'Notes');
@@ -1809,7 +1618,7 @@ hshs</div>
             let csv = 'Date,Note Content\n';
             notes.forEach(note => {
                 const date = new Date(note.date).toLocaleString();
-                const content = note.content.replace(/"/g, '""'); // Escape quotes
+                const content = note.content.replace(/"/g, '""');
                 csv += `"${date}","${content}"\n`;
             });
             return csv;
@@ -1875,6 +1684,10 @@ hshs</div>
 
         // Export Modal
         function openExportModal() {
+            if (tasks.length === 0) {
+                alert('No tasks to export');
+                return;
+            }
             document.getElementById('exportModal').classList.add('active');
         }
 
@@ -1986,7 +1799,7 @@ hshs</div>
                                 id: Date.now() + i,
                                 name: row[0],
                                 priority: (row[1] || 'medium').toLowerCase(),
-                                dueDate: row[2] || new Date().toISOString().split('T')[0],
+                                dueDate: row[2] || getToday(),
                                 completed: false,
                                 completedDate: null
                             };
@@ -2074,13 +1887,11 @@ hshs</div>
         }
 
         // Enter key support for quick add
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('quickTaskName').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    quickAddTask();
-                }
-            });
+        document.getElementById('quickTaskName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                quickAddTask();
+            }
         });
     </script>
-<noscript><img src="https://storage.abby.abb.com/akam/13/pixel_5c347c07?a=dD1jYzZjNGJjOWQ4NWZjOWIzYzRmYzAwZjExNmI2MmRiZjMxM2QzYzc5JmpzPW9mZg==" style="visibility: hidden; position: absolute; left: -999px; top: -999px;" /></noscript>
-</body></html>
+</body>
+</html>
