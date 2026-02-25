@@ -690,22 +690,22 @@
 <body>
     <div id="notificationPopup" class="notification-popup hidden">
         <div class="notification-popup-content">
-            <h2>ðŸ”” Enable Desktop Notifications</h2>
+            <h2>🔔 Enable Desktop Notifications</h2>
             <p><strong>Important!</strong> To receive AUTO reminders on your desktop, please allow notifications.</p>
             <p><strong>Notifications will AUTO-TRIGGER every 5 seconds!</strong></p>
             <ul>
-                <li>â° Automatic reminders (checks every 5 seconds)</li>
-                <li>ðŸ”” Missed reminders when you open the app</li>
-                <li>âœ… Action buttons (Complete, Snooze, View, Close)</li>
+                <li>⏰ Automatic reminders (checks every 5 seconds)</li>
+                <li>🔔 Missed reminders when you open the app</li>
+                <li>✅ Action buttons (Complete, Snooze, View, Close)</li>
             </ul>
-            <button onclick="enableNotifications()">âœ… Enable Auto Notifications</button>
+            <button onclick="enableNotifications()">✅ Enable Auto Notifications</button>
             <button class="skip-btn" onclick="skipNotifications()">Skip for Now</button>
         </div>
     </div>
 
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
-            <h2>ðŸ“‹ NoteNest</h2>
+            <h2>📋 NoteNest</h2>
             <p style="text-align: center; color: #7f8c8d; margin-bottom: 20px;">Auto Desktop Notifications (5 sec check)</p>
             <input type="text" id="usernameInput" placeholder="Enter your name" />
             <button onclick="login()">Start Managing Tasks</button>
@@ -716,9 +716,9 @@
         <div class="container">
             <div class="header">
                 <div>
-                    <h1>ðŸ“‹ <span id="userName"></span>, Welcome to ðŸ““ NoteNest âœï¸</h1>
+                    <h1>📋 <span id="userName"></span>, Welcome to 📓 NoteNest ✏️</h1>
                     <span id="notificationBadge" class="notification-badge disabled" onclick="enableNotifications()">
-                        ðŸ”” Click Here to Enable Notifications
+                        🔔 Click Here to Enable Notifications
                     </span>
                 </div>
                 <button class="logout-btn" onclick="logout()">Logout</button>
@@ -748,26 +748,26 @@
                     <option value="semiannually">Semi-Annually (6 Months)</option>
                     <option value="annually">Annually (12 Months)</option>
                 </select>
-                <button onclick="addTask()">âž• Add Task</button>
+                <button onclick="addTask()">➕ Add Task</button>
             </div>
 
             <div class="content">
                 <div class="tabs">
-                    <button class="tab active" onclick="switchTab('dashboard')">ðŸ“Š Dashboard</button>
-                    <button class="tab" onclick="switchTab('alltasks')">ðŸ“‹ All Tasks</button>
-                    <button class="tab" onclick="switchTab('reminders')">â° Reminders</button>
-                    <button class="tab" onclick="switchTab('notepad')">ðŸ“ Notepad</button>
-                    <button class="tab" onclick="switchTab('completed')">âœ… Completed</button>
+                    <button class="tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+                    <button class="tab" onclick="switchTab('alltasks')">📋 All Tasks</button>
+                    <button class="tab" onclick="switchTab('reminders')">⏰ Reminders</button>
+                    <button class="tab" onclick="switchTab('notepad')">📝 Notepad</button>
+                    <button class="tab" onclick="switchTab('completed')">✅ Completed</button>
                 </div>
 
                 <div id="dashboardTab" class="tab-content active">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div>
-                            <h3 style="margin-bottom: 15px;">ðŸ“… Today's Tasks</h3>
+                            <h3 style="margin-bottom: 15px;">📅 Today's Tasks</h3>
                             <div id="todayTasks"></div>
                         </div>
                         <div>
-                            <h3 style="margin-bottom: 15px;">â° Overdue Tasks</h3>
+                            <h3 style="margin-bottom: 15px;">⏰ Overdue Tasks</h3>
                             <div id="pendingTasks"></div>
                         </div>
                     </div>
@@ -775,7 +775,7 @@
 
                 <div id="alltasksTab" class="tab-content">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                        <h3 style="margin: 0;">ðŸ“‹ All Pending Tasks</h3>
+                        <h3 style="margin: 0;">📋 All Pending Tasks</h3>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <select id="filterPriority" onchange="filterAllTasks()" style="padding: 8px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
                                 <option value="all">All Priorities</option>
@@ -802,12 +802,12 @@
                 </div>
 
                 <div id="completedTab" class="tab-content">
-                    <h3 style="margin-bottom: 20px;">âœ… Completed Tasks</h3>
+                    <h3 style="margin-bottom: 20px;">✅ Completed Tasks</h3>
                     <div id="completedList"></div>
                 </div>
 
                 <div id="remindersTab" class="tab-content">
-                    <h3 style="margin-bottom: 20px;">â° Reminders (Auto-Trigger Every 5 Seconds)</h3>
+                    <h3 style="margin-bottom: 20px;">⏰ Reminders (Auto-Trigger Every 5 Seconds)</h3>
                     <div class="reminder-input-group">
                         <input type="text" id="reminderName" placeholder="Reminder name..." />
                         <div class="reminder-date-time">
@@ -830,53 +830,53 @@
                             <option value="semiannually">Semi-Annually (6 Months)</option>
                             <option value="annually">Annually (12 Months)</option>
                         </select>
-                        <button onclick="addReminder()" style="background: #667eea; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 14px; font-weight: bold;">âž• Add Reminder</button>
+                        <button onclick="addReminder()" style="background: #667eea; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 14px; font-weight: bold;">➕ Add Reminder</button>
                     </div>
                     <div id="remindersList"></div>
                 </div>
 
                 <div id="notepadTab" class="tab-content">
                     <div class="notepad-header">
-                        <h3>ðŸ“ My Notes</h3>
-                        <button class="export-notes-btn" onclick="openExportNotesModal()">ðŸ“¤ Export Notes</button>
+                        <h3>📝 My Notes</h3>
+                        <button class="export-notes-btn" onclick="openExportNotesModal()">📤 Export Notes</button>
                     </div>
                     <div class="note-input-area">
                         <textarea id="noteInput" class="note-input" placeholder="Write your note here..."></textarea>
-                        <button class="btn-primary" onclick="saveNote()" style="width: 100%; padding: 12px;">ðŸ’¾ Save Note</button>
+                        <button class="btn-primary" onclick="saveNote()" style="width: 100%; padding: 12px;">💾 Save Note</button>
                     </div>
                     <div id="notesList"></div>
                 </div>
             </div>
 
             <div class="action-buttons">
-                <button class="action-btn-float export-btn" onclick="openExportModal()">ðŸ“¤</button>
-                <button class="action-btn-float import-btn" onclick="openImportModal()">ðŸ“¥</button>
+                <button class="action-btn-float export-btn" onclick="openExportModal()">📤</button>
+                <button class="action-btn-float import-btn" onclick="openImportModal()">📥</button>
             </div>
         </div>
     </div>
 
     <!-- Debug Info -->
     <div id="debugInfo" class="debug-info hidden">
-        <div>ðŸ”„ Checking: <span id="debugCheck">--</span></div>
-        <div>â° Next Check: <span id="debugNext">--</span>s</div>
-        <div>ðŸ“‹ Reminders: <span id="debugCount">0</span></div>
-        <div>ðŸ”” Status: <span id="debugStatus">--</span></div>
+        <div>🔄 Checking: <span id="debugCheck">--</span></div>
+        <div>⏰ Next Check: <span id="debugNext">--</span>s</div>
+        <div>📋 Reminders: <span id="debugCount">0</span></div>
+        <div>🔔 Status: <span id="debugStatus">--</span></div>
     </div>
 
     <div id="exportModal" class="modal">
         <div class="modal-content">
-            <h2>ðŸ“¤ Export Tasks</h2>
-            <div class="export-option" onclick="exportToExcel()">ðŸ“Š Export to Excel (.xlsx)</div>
-            <div class="export-option" onclick="exportToCSV()">ðŸ“„ Export to CSV</div>
-            <div class="export-option" onclick="exportToJSON()">ðŸ”§ Export to JSON</div>
-            <div class="export-option" onclick="exportToTXT()">ðŸ“ Export to TXT</div>
+            <h2>📤 Export Tasks</h2>
+            <div class="export-option" onclick="exportToExcel()">📊 Export to Excel (.xlsx)</div>
+            <div class="export-option" onclick="exportToCSV()">📄 Export to CSV</div>
+            <div class="export-option" onclick="exportToJSON()">🔧 Export to JSON</div>
+            <div class="export-option" onclick="exportToTXT()">📝 Export to TXT</div>
             <button class="btn-close" onclick="closeExportModal()">Cancel</button>
         </div>
     </div>
 
     <div id="importModal" class="modal">
         <div class="modal-content">
-            <h2>ðŸ“¥ Import Tasks</h2>
+            <h2>📥 Import Tasks</h2>
             <p style="color: #7f8c8d; margin-bottom: 15px;">Format: Task Name | Priority | Due Date (DD-MM-YYYY)</p>
             <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="importFromExcel(event)" />
             <button class="export-option" onclick="document.getElementById('fileInput').click()">Choose Excel File</button>
@@ -886,18 +886,18 @@
 
     <div id="exportNotesModal" class="modal">
         <div class="modal-content">
-            <h2>ðŸ“¤ Export Notes</h2>
-            <div class="export-option" onclick="exportNotes('excel')">ðŸ“Š Export to Excel (.xlsx)</div>
-            <div class="export-option" onclick="exportNotes('csv')">ðŸ“„ Export to CSV</div>
-            <div class="export-option" onclick="exportNotes('json')">ðŸ”§ Export to JSON</div>
-            <div class="export-option" onclick="exportNotes('txt')">ðŸ“ Export to TXT</div>
+            <h2>📤 Export Notes</h2>
+            <div class="export-option" onclick="exportNotes('excel')">📊 Export to Excel (.xlsx)</div>
+            <div class="export-option" onclick="exportNotes('csv')">📄 Export to CSV</div>
+            <div class="export-option" onclick="exportNotes('json')">🔧 Export to JSON</div>
+            <div class="export-option" onclick="exportNotes('txt')">📝 Export to TXT</div>
             <button class="btn-close" onclick="closeExportNotesModal()">Cancel</button>
         </div>
     </div>
 
     <div id="editReminderModal" class="modal">
         <div class="edit-modal-content">
-            <h2>âœï¸ Edit Reminder</h2>
+            <h2>✏️ Edit Reminder</h2>
             <label>Reminder Name:</label>
             <input type="text" id="editReminderName" />
             <label>Date:</label>
@@ -995,7 +995,7 @@
 
         // AUTO-TRIGGER DESKTOP NOTIFICATION
         function showCustomDesktopNotification(reminder, isMissed) {
-            console.log('ðŸ”” SHOWING NOTIFICATION:', reminder.name);
+            console.log('🔔 SHOWING NOTIFICATION:', reminder.name);
             
             // Play sound
             playNotificationSound();
@@ -1006,8 +1006,8 @@
             overlay.id = 'customNotif-' + reminder.id;
             currentNotificationReminderId = reminder.id;
             
-            const title = isMissed ? 'ðŸ”” MISSED REMINDER' : 'â° REMINDER';
-            const icon = isMissed ? 'ðŸ””' : 'â°';
+            const title = isMissed ? '🔔 MISSED REMINDER' : '⏰ REMINDER';
+            const icon = isMissed ? '🔔' : '⏰';
             
             overlay.innerHTML = `
                 <div class="notif-header">
@@ -1018,13 +1018,13 @@
                     ${reminder.name}
                 </div>
                 <div class="notif-time">
-                    ðŸ“… ${formatDate(reminder.date)} at ${reminder.time}
+                    📅 ${formatDate(reminder.date)} at ${reminder.time}
                 </div>
                 <div class="notif-actions">
-                    <button class="notif-btn notif-btn-complete" onclick="completeReminderFromNotification(${reminder.id})">âœ… Complete</button>
-                    <button class="notif-btn notif-btn-snooze" onclick="snoozeReminderFromNotification(${reminder.id})">â° Snooze 5min</button>
-                    <button class="notif-btn notif-btn-view" onclick="viewReminderFromNotification(${reminder.id})">ðŸ‘ï¸ View</button>
-                    <button class="notif-btn notif-btn-close" onclick="closeCustomNotification(${reminder.id})">âœ–ï¸ Close</button>
+                    <button class="notif-btn notif-btn-complete" onclick="completeReminderFromNotification(${reminder.id})">✅ Complete</button>
+                    <button class="notif-btn notif-btn-snooze" onclick="snoozeReminderFromNotification(${reminder.id})">⏰ Snooze 5min</button>
+                    <button class="notif-btn notif-btn-view" onclick="viewReminderFromNotification(${reminder.id})">👁️ View</button>
+                    <button class="notif-btn notif-btn-close" onclick="closeCustomNotification(${reminder.id})">✖️ Close</button>
                 </div>
             `;
             
@@ -1039,8 +1039,8 @@
             if ('Notification' in window && Notification.permission === 'granted') {
                 try {
                     const notification = new Notification(title, {
-                        body: reminder.name + '\nðŸ“… ' + formatDate(reminder.date) + ' at ' + reminder.time,
-                        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="75" font-size="75">â°</text></svg>',
+                        body: reminder.name + '\n📅 ' + formatDate(reminder.date) + ' at ' + reminder.time,
+                        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="75" font-size="75">⏰</text></svg>',
                         requireInteraction: true,
                         tag: 'reminder-' + reminder.id,
                         silent: false
@@ -1068,7 +1068,7 @@
         function completeReminderFromNotification(reminderId) {
             completeReminder(reminderId);
             closeCustomNotification(reminderId);
-            showNotification('âœ… Reminder marked as complete!');
+            showNotification('✅ Reminder marked as complete!');
         }
 
         function snoozeReminderFromNotification(reminderId) {
@@ -1083,7 +1083,7 @@
                 localStorage.removeItem(getUserKey('shown_' + reminderId));
                 saveReminders(reminders);
                 closeCustomNotification(reminderId);
-                showNotification('â° Reminder snoozed for 5 minutes!');
+                showNotification('⏰ Reminder snoozed for 5 minutes!');
                 renderReminders();
             }
         }
@@ -1155,7 +1155,7 @@
                     if (permission === 'granted') {
                         document.getElementById('notificationPopup').classList.add('hidden');
                         updateNotificationStatus();
-                        showNotification('âœ… Desktop notifications enabled! Auto-checking every 5 seconds.');
+                        showNotification('✅ Desktop notifications enabled! Auto-checking every 5 seconds.');
                         updateDebugInfo();
                     } else {
                         alert('Please enable notifications in your browser settings.');
@@ -1173,11 +1173,11 @@
         function updateNotificationStatus() {
             const badge = document.getElementById('notificationBadge');
             if ('Notification' in window && Notification.permission === 'granted') {
-                badge.textContent = 'ðŸ”” Notifications Active âœ…';
+                badge.textContent = '🔔 Notifications Active ✅';
                 badge.className = 'notification-badge enabled';
                 badge.onclick = null;
             } else {
-                badge.textContent = 'ðŸ”” Click Here to Enable Notifications';
+                badge.textContent = '🔔 Click Here to Enable Notifications';
                 badge.className = 'notification-badge disabled';
                 badge.onclick = enableNotifications;
             }
@@ -1230,7 +1230,7 @@
             document.getElementById('taskRecurring').checked = false;
             document.getElementById('taskRecurringPeriod').style.display = 'none';
 
-            showNotification('âœ… Task added successfully!');
+            showNotification('✅ Task added successfully!');
             renderDashboard();
             renderAllTasks();
         }
@@ -1246,9 +1246,9 @@
                     const nextTask = {...task, id: Date.now(), status: 'pending', dueDate: getNextDate(task.dueDate, task.recurringPeriod), createdAt: new Date().toISOString()};
                     delete nextTask.completedAt;
                     tasks.push(nextTask);
-                    showNotification('âœ… Task completed! Next recurring task created.');
+                    showNotification('✅ Task completed! Next recurring task created.');
                 } else {
-                    showNotification('âœ… Task completed!');
+                    showNotification('✅ Task completed!');
                 }
 
                 saveTasks(tasks);
@@ -1265,7 +1265,7 @@
                 task.status = 'pending';
                 delete task.completedAt;
                 saveTasks(tasks);
-                showNotification('â†©ï¸ Task moved to pending!');
+                showNotification('↩️ Task moved to pending!');
                 renderDashboard();
                 renderAllTasks();
                 renderCompleted();
@@ -1275,7 +1275,7 @@
         function deleteTask(id) {
             if (confirm('Are you sure you want to delete this task?')) {
                 saveTasks(getTasks().filter(t => t.id !== id));
-                showNotification('ðŸ—‘ï¸ Task deleted!');
+                showNotification('🗑️ Task deleted!');
                 renderDashboard();
                 renderAllTasks();
                 renderCompleted();
@@ -1400,7 +1400,7 @@
                             ${task.recurring ? '<span class="recurring-badge">' + getRecurringLabel(task.recurringPeriod) + '</span>' : ''}
                         </div>
                         <div class="task-meta">
-                            ðŸ“… ${formatDate(task.dueDate)}
+                            📅 ${formatDate(task.dueDate)}
                         </div>
                     </div>
                     <div class="task-actions">
@@ -1425,12 +1425,12 @@
                             <div class="task-name" style="text-decoration: line-through;">${t.name}</div>
                             <div class="task-meta">
                                 <span class="priority-badge priority-${t.priority}">${t.priority}</span>
-                                <span style="margin-left: 10px;">âœ… ${formatDate(t.completedAt.split('T')[0])}</span>
+                                <span style="margin-left: 10px;">✅ ${formatDate(t.completedAt.split('T')[0])}</span>
                             </div>
                         </div>
                         <div class="task-actions">
-                            <button class="action-btn btn-undo" onclick="undoComplete(${t.id})">â†©ï¸ Undo</button>
-                            <button class="action-btn btn-delete" onclick="deleteTask(${t.id})">ðŸ—‘ï¸</button>
+                            <button class="action-btn btn-undo" onclick="undoComplete(${t.id})">↩️ Undo</button>
+                            <button class="action-btn btn-delete" onclick="deleteTask(${t.id})">🗑️</button>
                         </div>
                     </div>
                 `).join('');
@@ -1445,13 +1445,13 @@
                             ${task.recurring ? '<span class="recurring-badge">' + getRecurringLabel(task.recurringPeriod) + '</span>' : ''}
                         </div>
                         <div class="task-meta">
-                            ðŸ“… ${formatDate(task.dueDate)}
+                            📅 ${formatDate(task.dueDate)}
                         </div>
                     </div>
                     <div class="task-actions">
                         <input type="checkbox" class="task-checkbox" onchange="completeTask(${task.id})" />
-                        <button class="action-btn btn-edit" onclick="editTask(${task.id})">âœï¸</button>
-                        <button class="action-btn btn-delete" onclick="deleteTask(${task.id})">ðŸ—‘ï¸</button>
+                        <button class="action-btn btn-edit" onclick="editTask(${task.id})">✏️</button>
+                        <button class="action-btn btn-delete" onclick="deleteTask(${task.id})">🗑️</button>
                     </div>
                 </div>
             `;
@@ -1490,7 +1490,7 @@
             document.getElementById('reminderRecurring').checked = false;
             document.getElementById('reminderRecurringPeriod').style.display = 'none';
 
-            showNotification('â° Reminder added! Will auto-trigger at set time (checked every 5 seconds).');
+            showNotification('⏰ Reminder added! Will auto-trigger at set time (checked every 5 seconds).');
             renderReminders();
             updateDebugInfo();
         }
@@ -1506,9 +1506,9 @@
                     const nextReminder = {...reminder, id: Date.now(), status: 'pending', date: getNextDate(reminder.date, reminder.recurringPeriod), createdAt: new Date().toISOString()};
                     delete nextReminder.completedAt;
                     reminders.push(nextReminder);
-                    showNotification('âœ… Reminder completed! Next recurring reminder created.');
+                    showNotification('✅ Reminder completed! Next recurring reminder created.');
                 } else {
-                    showNotification('âœ… Reminder completed!');
+                    showNotification('✅ Reminder completed!');
                 }
 
                 saveReminders(reminders);
@@ -1525,7 +1525,7 @@
                 delete reminder.completedAt;
                 localStorage.removeItem(getUserKey('shown_' + id));
                 saveReminders(reminders);
-                showNotification('â†©ï¸ Reminder moved to pending!');
+                showNotification('↩️ Reminder moved to pending!');
                 renderReminders();
                 updateDebugInfo();
             }
@@ -1535,7 +1535,7 @@
             if (confirm('Are you sure you want to delete this reminder?')) {
                 localStorage.removeItem(getUserKey('shown_' + id));
                 saveReminders(getReminders().filter(r => r.id !== id));
-                showNotification('ðŸ—‘ï¸ Reminder deleted!');
+                showNotification('🗑️ Reminder deleted!');
                 renderReminders();
                 updateDebugInfo();
             }
@@ -1567,7 +1567,7 @@
                 reminder.recurringPeriod = reminder.recurring ? document.getElementById('editReminderRecurringPeriod').value : null;
                 localStorage.removeItem(getUserKey('shown_' + editingReminderId));
                 saveReminders(reminders);
-                showNotification('âœ… Reminder updated successfully!');
+                showNotification('✅ Reminder updated successfully!');
                 renderReminders();
                 closeEditReminderModal();
             }
@@ -1586,7 +1586,7 @@
             let html = '';
             
             if (pending.length > 0) {
-                html += '<h4 style="margin-bottom: 10px;">â° Pending Reminders</h4>';
+                html += '<h4 style="margin-bottom: 10px;">⏰ Pending Reminders</h4>';
                 html += pending.map(r => {
                     const reminderDateTime = new Date(r.date + 'T' + r.time);
                     const isOverdue = reminderDateTime < now;
@@ -1599,14 +1599,14 @@
                                     ${isOverdue ? '<span class="overdue-badge">OVERDUE</span>' : ''}
                                 </div>
                                 <div class="task-meta">
-                                    ðŸ“… ${formatDate(r.date)} at ${r.time}
-                                    ${isOverdue ? '<span style="color: #ff4757; font-weight: bold; margin-left: 10px;">âš ï¸ ' + getTimeAgo(reminderDateTime) + '</span>' : ''}
+                                    📅 ${formatDate(r.date)} at ${r.time}
+                                    ${isOverdue ? '<span style="color: #ff4757; font-weight: bold; margin-left: 10px;">⚠️ ' + getTimeAgo(reminderDateTime) + '</span>' : ''}
                                 </div>
                             </div>
                             <div class="task-actions">
                                 <input type="checkbox" class="task-checkbox" onchange="completeReminder(${r.id})" />
-                                <button class="action-btn btn-edit" onclick="editReminder(${r.id})">âœï¸</button>
-                                <button class="action-btn btn-delete" onclick="deleteReminder(${r.id})">ðŸ—‘ï¸</button>
+                                <button class="action-btn btn-edit" onclick="editReminder(${r.id})">✏️</button>
+                                <button class="action-btn btn-delete" onclick="deleteReminder(${r.id})">🗑️</button>
                             </div>
                         </div>
                     `;
@@ -1614,19 +1614,19 @@
             }
 
             if (completed.length > 0) {
-                html += '<h4 style="margin: 20px 0 10px 0;">âœ… Completed Reminders</h4>';
+                html += '<h4 style="margin: 20px 0 10px 0;">✅ Completed Reminders</h4>';
                 html += completed.map(r => `
                     <div class="task-item reminder-completed">
                         <div class="task-info">
                             <div class="task-name">${r.name}</div>
                             <div class="task-meta">
-                                ðŸ“… ${formatDate(r.date)} at ${r.time}
-                                <span style="margin-left: 10px;">âœ… ${formatDate(r.completedAt.split('T')[0])}</span>
+                                📅 ${formatDate(r.date)} at ${r.time}
+                                <span style="margin-left: 10px;">✅ ${formatDate(r.completedAt.split('T')[0])}</span>
                             </div>
                         </div>
                         <div class="task-actions">
-                            <button class="action-btn btn-undo" onclick="undoCompleteReminder(${r.id})">â†©ï¸</button>
-                            <button class="action-btn btn-delete" onclick="deleteReminder(${r.id})">ðŸ—‘ï¸</button>
+                            <button class="action-btn btn-undo" onclick="undoCompleteReminder(${r.id})">↩️</button>
+                            <button class="action-btn btn-delete" onclick="deleteReminder(${r.id})">🗑️</button>
                         </div>
                     </div>
                 `).join('');
@@ -1641,7 +1641,7 @@
 
         // AUTO-TRIGGER REMINDERS - CHECK EVERY 5 SECONDS
         function startReminderCheck() {
-            console.log('ðŸš€ Starting auto-check every 5 seconds...');
+            console.log('🚀 Starting auto-check every 5 seconds...');
             // Check immediately
             checkReminders();
             // Then check every 5 seconds for AUTO-TRIGGER
@@ -1655,24 +1655,24 @@
             const reminders = getReminders().filter(r => r.status === 'pending');
             const now = new Date();
             
-            console.log('ðŸ”„ Check #' + checkCounter + ' - Found ' + reminders.length + ' pending reminders');
+            console.log('🔄 Check #' + checkCounter + ' - Found ' + reminders.length + ' pending reminders');
 
             reminders.forEach(reminder => {
                 const reminderDateTime = new Date(reminder.date + 'T' + reminder.time);
                 const timeDiff = now - reminderDateTime;
                 
-                console.log('â° Reminder:', reminder.name, '| Time diff:', Math.floor(timeDiff/1000), 'seconds');
+                console.log('⏰ Reminder:', reminder.name, '| Time diff:', Math.floor(timeDiff/1000), 'seconds');
                 
                 // Trigger if within 5 minutes window (300000 ms)
                 if (timeDiff >= 0 && timeDiff < 300000) {
                     const shownKey = getUserKey('shown_' + reminder.id);
                     if (!localStorage.getItem(shownKey)) {
-                        console.log('ðŸ”” AUTO-TRIGGERING NOTIFICATION for:', reminder.name);
+                        console.log('🔔 AUTO-TRIGGERING NOTIFICATION for:', reminder.name);
                         // AUTO-TRIGGER NOTIFICATION
                         showCustomDesktopNotification(reminder, false);
                         localStorage.setItem(shownKey, 'true');
                     } else {
-                        console.log('â­ï¸ Already shown:', reminder.name);
+                        console.log('⏭️ Already shown:', reminder.name);
                     }
                 }
             });
@@ -1710,16 +1710,16 @@
             modal.id = 'missedRemindersModal';
             
             let html = '<div class="missed-reminders-content">';
-            html += '<h2>ðŸ”” You Have ' + reminders.length + ' Missed Reminder(s)!</h2>';
+            html += '<h2>🔔 You Have ' + reminders.length + ' Missed Reminder(s)!</h2>';
             html += '<p style="color: #7f8c8d; margin-bottom: 20px;">These reminders were due while you were offline:</p>';
             
             reminders.forEach(reminder => {
                 const reminderDateTime = new Date(reminder.date + 'T' + reminder.time);
                 const timeAgo = getTimeAgo(reminderDateTime);
                 html += '<div class="missed-reminder-item">';
-                html += '<h3>â° ' + reminder.name + '</h3>';
-                html += '<p>ðŸ“… Due: ' + formatDate(reminder.date) + ' at ' + reminder.time + '</p>';
-                html += '<p style="color: #ff4757; font-weight: bold;">âš ï¸ ' + timeAgo + '</p>';
+                html += '<h3>⏰ ' + reminder.name + '</h3>';
+                html += '<p>📅 Due: ' + formatDate(reminder.date) + ' at ' + reminder.time + '</p>';
+                html += '<p style="color: #ff4757; font-weight: bold;">⚠️ ' + timeAgo + '</p>';
                 html += '</div>';
             });
             
@@ -1767,7 +1767,7 @@
             document.getElementById('noteInput').value = '';
             renderNotes();
             setTimeout(showStartupGuide, 1000);
-            showNotification('ðŸ“ Note saved successfully!');
+            showNotification('📝 Note saved successfully!');
         }
 
         function editNote(noteId) {
@@ -1783,8 +1783,8 @@
                 </div>
                 <textarea class="note-edit-input" id="edit-note-${noteId}">${note.content}</textarea>
                 <div class="note-actions">
-                    <button class="btn-primary" onclick="saveNoteEdit(${noteId})">ðŸ’¾ Save</button>
-                    <button class="btn-cancel" onclick="renderNotes()">âŒ Cancel</button>
+                    <button class="btn-primary" onclick="saveNoteEdit(${noteId})">💾 Save</button>
+                    <button class="btn-cancel" onclick="renderNotes()">❌ Cancel</button>
                 </div>
             `;
         }
@@ -1806,7 +1806,7 @@
             saveNotesData();
             renderNotes();
             setTimeout(showStartupGuide, 1000);
-            showNotification('âœ… Note updated successfully!');
+            showNotification('✅ Note updated successfully!');
         }
 
         function deleteNote(noteId) {
@@ -1815,7 +1815,7 @@
                 saveNotesData();
                 renderNotes();
             setTimeout(showStartupGuide, 1000);
-                showNotification('ðŸ—‘ï¸ Note deleted!');
+                showNotification('🗑️ Note deleted!');
             }
         }
 
@@ -1830,8 +1830,8 @@
                         <div class="note-header">
                             <span class="note-date">${new Date(note.date).toLocaleString()}</span>
                             <div class="note-actions">
-                                <button class="btn-primary" onclick="editNote(${note.id})">âœï¸ Edit</button>
-                                <button class="btn-danger" onclick="deleteNote(${note.id})">ðŸ—‘ï¸ Delete</button>
+                                <button class="btn-primary" onclick="editNote(${note.id})">✏️ Edit</button>
+                                <button class="btn-danger" onclick="deleteNote(${note.id})">🗑️ Delete</button>
                             </div>
                         </div>
                         <div class="note-content">${note.content}</div>
@@ -1905,7 +1905,7 @@
             }
 
             closeExportNotesModal();
-            showNotification('ðŸ“¥ Notes exported as ' + format.toUpperCase() + '!');
+            showNotification('📥 Notes exported as ' + format.toUpperCase() + '!');
         }
 
         function switchTab(tabName) {
@@ -1964,7 +1964,7 @@
             XLSX.utils.book_append_sheet(wb, ws, 'Tasks');
             XLSX.writeFile(wb, currentUser + '_tasks_' + new Date().toISOString().split('T')[0] + '.xlsx');
             closeExportModal();
-            showNotification('ðŸ“Š Exported to Excel!');
+            showNotification('📊 Exported to Excel!');
         }
 
         function importFromExcel(e) {
@@ -2043,7 +2043,7 @@
                     });
 
                     saveTasks(tasks);
-                    showNotification('ðŸ“¥ ' + count + ' tasks imported successfully!');
+                    showNotification('📥 ' + count + ' tasks imported successfully!');
                     renderDashboard();
                     renderAllTasks();
                     closeImportModal();
@@ -2063,7 +2063,7 @@
             });
             downloadFile(csv, currentUser + '_tasks.csv', 'text/csv');
             closeExportModal();
-            showNotification('ðŸ“„ Exported to CSV!');
+            showNotification('📄 Exported to CSV!');
         }
 
         function exportToJSON() {
@@ -2071,7 +2071,7 @@
             const json = JSON.stringify(tasks, null, 2);
             downloadFile(json, currentUser + '_tasks.json', 'application/json');
             closeExportModal();
-            showNotification('ðŸ”§ Exported to JSON!');
+            showNotification('🔧 Exported to JSON!');
         }
 
         function exportToTXT() {
@@ -2088,7 +2088,7 @@
             });
             downloadFile(txt, currentUser + '_tasks.txt', 'text/plain');
             closeExportModal();
-            showNotification('ðŸ“ Exported to TXT!');
+            showNotification('📝 Exported to TXT!');
         }
 
         function downloadFile(content, filename, type) {
@@ -2143,7 +2143,7 @@
                 task.recurring = document.getElementById('editTaskRecurring').checked;
                 task.recurringPeriod = task.recurring ? document.getElementById('editTaskRecurringPeriod').value : null;
                 saveTasks(tasks);
-                showNotification('âœ… Task updated successfully!');
+                showNotification('✅ Task updated successfully!');
                 renderDashboard();
                 renderAllTasks();
                 closeEditTaskModal();
@@ -2226,7 +2226,7 @@
 
     <div id="editTaskModal" class="modal">
         <div class="edit-modal-content">
-            <h2>âœï¸ Edit Task</h2>
+            <h2>✏️ Edit Task</h2>
             <label>Task Name:</label>
             <input type="text" id="editTaskName" />
             <label>Priority:</label>
@@ -2262,19 +2262,19 @@
 
     <div id="startupGuide" class="notification-popup" style="display: none;">
         <div class="notification-popup-content">
-            <h2>ðŸ“‹ Welcome to NoteNest!</h2>
+            <h2>📋 Welcome to NoteNest!</h2>
             <p style="text-align: left; margin: 20px 0;">
                 <strong>Quick Setup (3 steps):</strong>
             </p>
             <ol style="text-align: left; margin: 20px 40px; line-height: 2;">
                 <li><strong>Enable Notifications</strong> - Click the red badge above</li>
-                <li><strong>Pin This Tab</strong> - Right-click tab â†’ "Pin Tab"</li>
+                <li><strong>Pin This Tab</strong> - Right-click tab → "Pin Tab"</li>
                 <li><strong>Set Your Reminders</strong> - Go to Reminders tab</li>
             </ol>
             <p style="color: #7f8c8d; font-size: 14px; margin-top: 20px;">
-                ðŸ’¡ <strong>Tip:</strong> Keep this tab open (pinned) for notifications to work!
+                💡 <strong>Tip:</strong> Keep this tab open (pinned) for notifications to work!
             </p>
-            <button onclick="closeStartupGuide()">âœ… Got It, Let's Start!</button>
+            <button onclick="closeStartupGuide()">✅ Got It, Let's Start!</button>
         </div>
     </div>
 
