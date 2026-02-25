@@ -1,0 +1,2282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoteNest - Smart Task & Note Manager</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        .login-screen { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 10000;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+        .login-box h2 { color: #667eea; margin-bottom: 20px; text-align: center; }
+        .login-box input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .login-box button:hover { background: #5568d3; }
+        
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .header h1 { color: #667eea; font-size: 28px; }
+        .notification-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-left: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .notification-badge.disabled {
+            background: #ff4757;
+            color: white;
+        }
+        .notification-badge.disabled:hover {
+            background: #ff3838;
+            transform: scale(1.05);
+        }
+        .notification-badge.enabled {
+            background: #10ac84;
+            color: white;
+            cursor: default;
+        }
+        .logout-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .logout-btn:hover { background: #ff3838; }
+        
+        .quick-add {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .quick-add input, .quick-add select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 150px;
+        }
+        .quick-add input[type="date"] {
+            min-width: 180px;
+        }
+        .quick-add button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .quick-add button:hover { background: #5568d3; }
+        .recurring-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .recurring-label input { width: 20px; height: 20px; cursor: pointer; }
+        
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 500px;
+        }
+        
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .tab {
+            padding: 12px 25px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .tab:hover { background: #e9ecef; }
+        .tab.active { background: #667eea; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .task-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-info { flex: 1; }
+        .task-name { font-weight: 600; color: #2c3e50; margin-bottom: 5px; }
+        .task-meta { font-size: 12px; color: #7f8c8d; }
+        .priority-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .priority-high { background: #ff4757; color: white; }
+        .priority-medium { background: #ffa502; color: white; }
+        .priority-low { background: #a29bfe; color: white; }
+        .recurring-badge {
+            background: #10ac84;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .overdue-badge {
+            background: #ff4757;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 5px;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.5; }
+        }
+        .task-checkbox { width: 20px; height: 20px; cursor: pointer; }
+        .task-actions { display: flex; gap: 10px; }
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .btn-delete { background: #ff4757; color: white; }
+        .btn-undo { background: #10ac84; color: white; }
+        .btn-edit { background: #667eea; color: white; }
+        
+        .reminder-input-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .reminder-input-group input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .reminder-date-time {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .reminder-date-time input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            min-width: 150px;
+        }
+        
+        .notepad-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .note-input-area {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ffd93d;
+            margin-bottom: 20px;
+        }
+        .note-input {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #ffd93d;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+        .note-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        .note-item.editing {
+            background: #fff9e6;
+            border-left-color: #ffd93d;
+        }
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .note-date {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .note-content {
+            color: #2c3e50;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .note-edit-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #ffd93d;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+        .note-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .btn-cancel {
+            background: #95a5a6;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .export-notes-btn {
+            background: #10ac84;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .action-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+        .action-btn-float {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .export-btn { background: #10ac84; color: white; }
+        .import-btn { background: #ee5a6f; color: white; }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 { color: #667eea; margin-bottom: 20px; }
+        .export-option {
+            padding: 15px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .export-option:hover { background: #667eea; color: white; }
+        .btn-close {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .edit-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+        }
+        .edit-modal-content input, .edit-modal-content select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .edit-modal-content label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10ac84;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* DESKTOP NOTIFICATION - BOTTOM RIGHT */
+        .desktop-notification-overlay {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            padding: 20px;
+            max-width: 400px;
+            min-width: 350px;
+            z-index: 9999;
+            animation: slideInBottom 0.4s ease;
+            border: 2px solid #667eea;
+        }
+        @keyframes slideInBottom {
+            from { transform: translateY(500px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .desktop-notification-overlay .notif-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .desktop-notification-overlay .notif-icon {
+            font-size: 32px;
+            margin-right: 15px;
+        }
+        .desktop-notification-overlay .notif-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .desktop-notification-overlay .notif-body {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .desktop-notification-overlay .notif-time {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-bottom: 15px;
+        }
+        .desktop-notification-overlay .notif-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .desktop-notification-overlay .notif-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .desktop-notification-overlay .notif-btn:hover {
+            transform: scale(1.05);
+        }
+        .desktop-notification-overlay .notif-btn-complete {
+            background: #10ac84;
+            color: white;
+        }
+        .desktop-notification-overlay .notif-btn-snooze {
+            background: #ffa502;
+            color: white;
+        }
+        .desktop-notification-overlay .notif-btn-view {
+            background: #667eea;
+            color: white;
+        }
+        .desktop-notification-overlay .notif-btn-close {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .missed-reminders-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .missed-reminders-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .missed-reminders-content h2 {
+            color: #ff4757;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .missed-reminder-item {
+            background: #fff3cd;
+            border-left: 4px solid #ff4757;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        .missed-reminder-item h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .missed-reminder-item p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .notification-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .notification-popup-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        }
+        .notification-popup-content h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        .notification-popup-content p {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .notification-popup-content ul {
+            text-align: left;
+            margin: 20px 40px;
+            color: #2c3e50;
+        }
+        .notification-popup-content button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .notification-popup-content button:hover {
+            background: #5568d3;
+        }
+        .notification-popup-content .skip-btn {
+            background: #95a5a6;
+        }
+        .notification-popup-content .skip-btn:hover {
+            background: #7f8c8d;
+        }
+        
+        .empty-state { text-align: center; padding: 40px; color: #95a5a6; }
+        .hidden { display: none !important; }
+        input[type="file"] { display: none; }
+        
+        .reminder-completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+        
+        /* Debug info */
+        .debug-info {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: #10ac84;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-family: monospace;
+            z-index: 10000;
+            max-width: 300px;
+        }
+        
+        @media (max-width: 768px) {
+            .quick-add { flex-direction: column; }
+            .quick-add input, .quick-add select, .quick-add button { width: 100%; }
+            .desktop-notification-overlay {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+    
+        @media (max-width: 768px) {
+            #dashboardTab > div {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div id="notificationPopup" class="notification-popup hidden">
+        <div class="notification-popup-content">
+            <h2>ðŸ”” Enable Desktop Notifications</h2>
+            <p><strong>Important!</strong> To receive AUTO reminders on your desktop, please allow notifications.</p>
+            <p><strong>Notifications will AUTO-TRIGGER every 5 seconds!</strong></p>
+            <ul>
+                <li>â° Automatic reminders (checks every 5 seconds)</li>
+                <li>ðŸ”” Missed reminders when you open the app</li>
+                <li>âœ… Action buttons (Complete, Snooze, View, Close)</li>
+            </ul>
+            <button onclick="enableNotifications()">âœ… Enable Auto Notifications</button>
+            <button class="skip-btn" onclick="skipNotifications()">Skip for Now</button>
+        </div>
+    </div>
+
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <h2>ðŸ“‹ NoteNest</h2>
+            <p style="text-align: center; color: #7f8c8d; margin-bottom: 20px;">Auto Desktop Notifications (5 sec check)</p>
+            <input type="text" id="usernameInput" placeholder="Enter your name" />
+            <button onclick="login()">Start Managing Tasks</button>
+        </div>
+    </div>
+
+    <div id="mainApp" class="hidden">
+        <div class="container">
+            <div class="header">
+                <div>
+                    <h1>ðŸ“‹ <span id="userName"></span>, Welcome to ðŸ““ NoteNest âœï¸</h1>
+                    <span id="notificationBadge" class="notification-badge disabled" onclick="enableNotifications()">
+                        ðŸ”” Click Here to Enable Notifications
+                    </span>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="quick-add">
+                <input type="text" id="taskName" placeholder="Task name..." />
+                <select id="taskPriority">
+                    <option value="high">High Priority</option>
+                    <option value="medium" selected>Medium Priority</option>
+                    <option value="low">Low Priority</option>
+                </select>
+                <input type="date" id="taskDate" />
+                <label class="recurring-label">
+                    <input type="checkbox" id="taskRecurring" onchange="toggleTaskRecurring()" />
+                    <span>Recurring</span>
+                </label>
+                <select id="taskRecurringPeriod" style="display: none;">
+                    <option value="daily">Daily</option>
+                    <option value="3days">Every 3 Days</option>
+                    <option value="5days">Every 5 Days</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="10days">Every 10 Days</option>
+                    <option value="biweekly">Bi-Weekly (15 Days)</option>
+                    <option value="monthly" selected>Monthly</option>
+                    <option value="quarterly">Quarterly (3 Months)</option>
+                    <option value="semiannually">Semi-Annually (6 Months)</option>
+                    <option value="annually">Annually (12 Months)</option>
+                </select>
+                <button onclick="addTask()">âž• Add Task</button>
+            </div>
+
+            <div class="content">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('dashboard')">ðŸ“Š Dashboard</button>
+                    <button class="tab" onclick="switchTab('alltasks')">ðŸ“‹ All Tasks</button>
+                    <button class="tab" onclick="switchTab('reminders')">â° Reminders</button>
+                    <button class="tab" onclick="switchTab('notepad')">ðŸ“ Notepad</button>
+                    <button class="tab" onclick="switchTab('completed')">âœ… Completed</button>
+                </div>
+
+                <div id="dashboardTab" class="tab-content active">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <h3 style="margin-bottom: 15px;">ðŸ“… Today's Tasks</h3>
+                            <div id="todayTasks"></div>
+                        </div>
+                        <div>
+                            <h3 style="margin-bottom: 15px;">â° Overdue Tasks</h3>
+                            <div id="pendingTasks"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="alltasksTab" class="tab-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                        <h3 style="margin: 0;">ðŸ“‹ All Pending Tasks</h3>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <select id="filterPriority" onchange="filterAllTasks()" style="padding: 8px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                                <option value="all">All Priorities</option>
+                                <option value="high">High Priority</option>
+                                <option value="medium">Medium Priority</option>
+                                <option value="low">Low Priority</option>
+                            </select>
+                            <select id="filterRecurring" onchange="filterAllTasks()" style="padding: 8px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                                <option value="all">All Tasks</option>
+                                <option value="recurring">Recurring Only</option>
+                                <option value="nonrecurring">Non-Recurring Only</option>
+                            </select>
+                            <select id="filterDate" onchange="filterAllTasks()" style="padding: 8px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                                <option value="all">All Dates</option>
+                                <option value="overdue">Overdue</option>
+                                <option value="today">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                            </select>
+                            <button onclick="clearFilters()" style="padding: 8px 15px; background: #95a5a6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">Clear Filters</button>
+                        </div>
+                    </div>
+                    <div id="allTasksList"></div>
+                </div>
+
+                <div id="completedTab" class="tab-content">
+                    <h3 style="margin-bottom: 20px;">âœ… Completed Tasks</h3>
+                    <div id="completedList"></div>
+                </div>
+
+                <div id="remindersTab" class="tab-content">
+                    <h3 style="margin-bottom: 20px;">â° Reminders (Auto-Trigger Every 5 Seconds)</h3>
+                    <div class="reminder-input-group">
+                        <input type="text" id="reminderName" placeholder="Reminder name..." />
+                        <div class="reminder-date-time">
+                            <input type="date" id="reminderDate" />
+                            <input type="time" id="reminderTime" />
+                        </div>
+                        <label class="recurring-label" style="margin-bottom: 10px;">
+                            <input type="checkbox" id="reminderRecurring" onchange="toggleReminderRecurring()" />
+                            <span>Recurring</span>
+                        </label>
+                        <select id="reminderRecurringPeriod" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 2px solid #e0e0e0; border-radius: 8px; display: none;">
+                            <option value="daily">Daily</option>
+                            <option value="3days">Every 3 Days</option>
+                            <option value="5days">Every 5 Days</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="10days">Every 10 Days</option>
+                            <option value="biweekly">Bi-Weekly (15 Days)</option>
+                            <option value="monthly" selected>Monthly</option>
+                            <option value="quarterly">Quarterly (3 Months)</option>
+                            <option value="semiannually">Semi-Annually (6 Months)</option>
+                            <option value="annually">Annually (12 Months)</option>
+                        </select>
+                        <button onclick="addReminder()" style="background: #667eea; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 14px; font-weight: bold;">âž• Add Reminder</button>
+                    </div>
+                    <div id="remindersList"></div>
+                </div>
+
+                <div id="notepadTab" class="tab-content">
+                    <div class="notepad-header">
+                        <h3>ðŸ“ My Notes</h3>
+                        <button class="export-notes-btn" onclick="openExportNotesModal()">ðŸ“¤ Export Notes</button>
+                    </div>
+                    <div class="note-input-area">
+                        <textarea id="noteInput" class="note-input" placeholder="Write your note here..."></textarea>
+                        <button class="btn-primary" onclick="saveNote()" style="width: 100%; padding: 12px;">ðŸ’¾ Save Note</button>
+                    </div>
+                    <div id="notesList"></div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn-float export-btn" onclick="openExportModal()">ðŸ“¤</button>
+                <button class="action-btn-float import-btn" onclick="openImportModal()">ðŸ“¥</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Debug Info -->
+    <div id="debugInfo" class="debug-info hidden">
+        <div>ðŸ”„ Checking: <span id="debugCheck">--</span></div>
+        <div>â° Next Check: <span id="debugNext">--</span>s</div>
+        <div>ðŸ“‹ Reminders: <span id="debugCount">0</span></div>
+        <div>ðŸ”” Status: <span id="debugStatus">--</span></div>
+    </div>
+
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <h2>ðŸ“¤ Export Tasks</h2>
+            <div class="export-option" onclick="exportToExcel()">ðŸ“Š Export to Excel (.xlsx)</div>
+            <div class="export-option" onclick="exportToCSV()">ðŸ“„ Export to CSV</div>
+            <div class="export-option" onclick="exportToJSON()">ðŸ”§ Export to JSON</div>
+            <div class="export-option" onclick="exportToTXT()">ðŸ“ Export to TXT</div>
+            <button class="btn-close" onclick="closeExportModal()">Cancel</button>
+        </div>
+    </div>
+
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <h2>ðŸ“¥ Import Tasks</h2>
+            <p style="color: #7f8c8d; margin-bottom: 15px;">Format: Task Name | Priority | Due Date (DD-MM-YYYY)</p>
+            <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="importFromExcel(event)" />
+            <button class="export-option" onclick="document.getElementById('fileInput').click()">Choose Excel File</button>
+            <button class="btn-close" onclick="closeImportModal()">Cancel</button>
+        </div>
+    </div>
+
+    <div id="exportNotesModal" class="modal">
+        <div class="modal-content">
+            <h2>ðŸ“¤ Export Notes</h2>
+            <div class="export-option" onclick="exportNotes('excel')">ðŸ“Š Export to Excel (.xlsx)</div>
+            <div class="export-option" onclick="exportNotes('csv')">ðŸ“„ Export to CSV</div>
+            <div class="export-option" onclick="exportNotes('json')">ðŸ”§ Export to JSON</div>
+            <div class="export-option" onclick="exportNotes('txt')">ðŸ“ Export to TXT</div>
+            <button class="btn-close" onclick="closeExportNotesModal()">Cancel</button>
+        </div>
+    </div>
+
+    <div id="editReminderModal" class="modal">
+        <div class="edit-modal-content">
+            <h2>âœï¸ Edit Reminder</h2>
+            <label>Reminder Name:</label>
+            <input type="text" id="editReminderName" />
+            <label>Date:</label>
+            <input type="date" id="editReminderDate" />
+            <label>Time:</label>
+            <input type="time" id="editReminderTime" />
+            <label class="recurring-label">
+                <input type="checkbox" id="editReminderRecurring" onchange="toggleEditReminderRecurring()" />
+                <span>Recurring</span>
+            </label>
+            <select id="editReminderRecurringPeriod" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; display: none;">
+                <option value="daily">Daily</option>
+                <option value="3days">Every 3 Days</option>
+                <option value="5days">Every 5 Days</option>
+                <option value="weekly">Weekly</option>
+                <option value="10days">Every 10 Days</option>
+                <option value="biweekly">Bi-Weekly (15 Days)</option>
+                <option value="monthly" selected>Monthly</option>
+                <option value="quarterly">Quarterly (3 Months)</option>
+                <option value="semiannually">Semi-Annually (6 Months)</option>
+                <option value="annually">Annually (12 Months)</option>
+            </select>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="saveEditedReminder()" style="flex: 1; background: #10ac84; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">Save</button>
+                <button onclick="closeEditReminderModal()" style="flex: 1; background: #ff4757; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = '';
+        let reminderInterval = null;
+        let editingReminderId = null;
+        let notes = [];
+        let currentNotificationReminderId = null;
+        let checkCounter = 0;
+        let nextCheckCountdown = 5;
+
+        function getUserKey(key) { return currentUser + '_' + key; }
+        
+        function getGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) return 'Good Morning';
+            if (hour < 17) return 'Good Afternoon';
+            return 'Good Evening';
+        }
+
+        function getTasks() { return JSON.parse(localStorage.getItem(getUserKey('tasks')) || '[]'); }
+        function saveTasks(tasks) { localStorage.setItem(getUserKey('tasks'), JSON.stringify(tasks)); }
+        function getReminders() { return JSON.parse(localStorage.getItem(getUserKey('reminders')) || '[]'); }
+        function saveReminders(reminders) { localStorage.setItem(getUserKey('reminders'), JSON.stringify(reminders)); }
+        function getNotes() { return JSON.parse(localStorage.getItem(getUserKey('notes')) || '[]'); }
+        function saveNotesData() { localStorage.setItem(getUserKey('notes'), JSON.stringify(notes)); }
+        function loadNotes() { notes = getNotes(); }
+
+        // Update debug info
+        function updateDebugInfo() {
+            const reminders = getReminders().filter(r => r.status === 'pending');
+            document.getElementById('debugCheck').textContent = checkCounter;
+            document.getElementById('debugNext').textContent = nextCheckCountdown;
+            document.getElementById('debugCount').textContent = reminders.length;
+            document.getElementById('debugStatus').textContent = Notification.permission === 'granted' ? 'Enabled' : 'Disabled';
+        }
+
+        // Countdown timer
+        setInterval(() => {
+            if (nextCheckCountdown > 0) {
+                nextCheckCountdown--;
+                updateDebugInfo();
+            }
+        }, 1000);
+
+        // Notification sound (beep)
+        function playNotificationSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {
+                console.log('Sound not supported');
+            }
+        }
+
+        // AUTO-TRIGGER DESKTOP NOTIFICATION
+        function showCustomDesktopNotification(reminder, isMissed) {
+            console.log('ðŸ”” SHOWING NOTIFICATION:', reminder.name);
+            
+            // Play sound
+            playNotificationSound();
+            
+            // Show custom overlay notification in BOTTOM-RIGHT
+            const overlay = document.createElement('div');
+            overlay.className = 'desktop-notification-overlay';
+            overlay.id = 'customNotif-' + reminder.id;
+            currentNotificationReminderId = reminder.id;
+            
+            const title = isMissed ? 'ðŸ”” MISSED REMINDER' : 'â° REMINDER';
+            const icon = isMissed ? 'ðŸ””' : 'â°';
+            
+            overlay.innerHTML = `
+                <div class="notif-header">
+                    <div class="notif-icon">${icon}</div>
+                    <div class="notif-title">${title}</div>
+                </div>
+                <div class="notif-body">
+                    ${reminder.name}
+                </div>
+                <div class="notif-time">
+                    ðŸ“… ${formatDate(reminder.date)} at ${reminder.time}
+                </div>
+                <div class="notif-actions">
+                    <button class="notif-btn notif-btn-complete" onclick="completeReminderFromNotification(${reminder.id})">âœ… Complete</button>
+                    <button class="notif-btn notif-btn-snooze" onclick="snoozeReminderFromNotification(${reminder.id})">â° Snooze 5min</button>
+                    <button class="notif-btn notif-btn-view" onclick="viewReminderFromNotification(${reminder.id})">ðŸ‘ï¸ View</button>
+                    <button class="notif-btn notif-btn-close" onclick="closeCustomNotification(${reminder.id})">âœ–ï¸ Close</button>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+            
+            // Auto-close after 30 seconds
+            setTimeout(() => {
+                closeCustomNotification(reminder.id);
+            }, 30000);
+            
+            // Also try browser notification
+            if ('Notification' in window && Notification.permission === 'granted') {
+                try {
+                    const notification = new Notification(title, {
+                        body: reminder.name + '\nðŸ“… ' + formatDate(reminder.date) + ' at ' + reminder.time,
+                        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="75" font-size="75">â°</text></svg>',
+                        requireInteraction: true,
+                        tag: 'reminder-' + reminder.id,
+                        silent: false
+                    });
+
+                    notification.onclick = function() {
+                        window.focus();
+                        switchTab('reminders');
+                        this.close();
+                    };
+                } catch (e) {
+                    console.log('Browser notification failed:', e);
+                }
+            }
+        }
+
+        function closeCustomNotification(reminderId) {
+            const overlay = document.getElementById('customNotif-' + reminderId);
+            if (overlay) {
+                overlay.style.animation = 'slideInBottom 0.3s ease reverse';
+                setTimeout(() => overlay.remove(), 300);
+            }
+        }
+
+        function completeReminderFromNotification(reminderId) {
+            completeReminder(reminderId);
+            closeCustomNotification(reminderId);
+            showNotification('âœ… Reminder marked as complete!');
+        }
+
+        function snoozeReminderFromNotification(reminderId) {
+            const reminders = getReminders();
+            const reminder = reminders.find(r => r.id === reminderId);
+            if (reminder) {
+                // Snooze for 5 minutes
+                const now = new Date();
+                now.setMinutes(now.getMinutes() + 5);
+                reminder.date = now.toISOString().split('T')[0];
+                reminder.time = now.toTimeString().slice(0, 5);
+                localStorage.removeItem(getUserKey('shown_' + reminderId));
+                saveReminders(reminders);
+                closeCustomNotification(reminderId);
+                showNotification('â° Reminder snoozed for 5 minutes!');
+                renderReminders();
+            }
+        }
+
+        function viewReminderFromNotification(reminderId) {
+            closeCustomNotification(reminderId);
+            switchTab('reminders');
+            window.focus();
+        }
+
+        window.onload = function() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = savedUser;
+                showMainApp();
+            }
+        };
+
+        function login() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (!username) { 
+                alert('Please enter your name'); 
+                return; 
+            }
+            currentUser = username;
+            localStorage.setItem('currentUser', username);
+            showMainApp();
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentUser = '';
+                localStorage.removeItem('currentUser');
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('debugInfo').classList.add('hidden');
+                if (reminderInterval) {
+                    clearInterval(reminderInterval);
+                }
+            }
+        }
+
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('debugInfo').classList.remove('hidden');
+            document.getElementById('userName').textContent = getGreeting() + ', ' + currentUser;
+            
+            updateNotificationStatus();
+            
+            if ('Notification' in window && Notification.permission === 'default') {
+                document.getElementById('notificationPopup').classList.remove('hidden');
+            }
+            
+            loadNotes();
+            checkMissedReminders();
+            renderDashboard();
+            renderAllTasks();
+            renderCompleted();
+            renderReminders();
+            renderNotes();
+            setTimeout(showStartupGuide, 1000);
+            startReminderCheck();
+        }
+
+        function enableNotifications() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === 'granted') {
+                        document.getElementById('notificationPopup').classList.add('hidden');
+                        updateNotificationStatus();
+                        showNotification('âœ… Desktop notifications enabled! Auto-checking every 5 seconds.');
+                        updateDebugInfo();
+                    } else {
+                        alert('Please enable notifications in your browser settings.');
+                    }
+                });
+            } else {
+                alert('Your browser does not support desktop notifications.');
+            }
+        }
+
+        function skipNotifications() {
+            document.getElementById('notificationPopup').classList.add('hidden');
+        }
+
+        function updateNotificationStatus() {
+            const badge = document.getElementById('notificationBadge');
+            if ('Notification' in window && Notification.permission === 'granted') {
+                badge.textContent = 'ðŸ”” Notifications Active âœ…';
+                badge.className = 'notification-badge enabled';
+                badge.onclick = null;
+            } else {
+                badge.textContent = 'ðŸ”” Click Here to Enable Notifications';
+                badge.className = 'notification-badge disabled';
+                badge.onclick = enableNotifications;
+            }
+        }
+
+        function toggleTaskRecurring() {
+            const recurring = document.getElementById('taskRecurring').checked;
+            document.getElementById('taskRecurringPeriod').style.display = recurring ? 'block' : 'none';
+        }
+
+        function toggleReminderRecurring() {
+            const recurring = document.getElementById('reminderRecurring').checked;
+            document.getElementById('reminderRecurringPeriod').style.display = recurring ? 'block' : 'none';
+        }
+
+        function toggleEditReminderRecurring() {
+            const recurring = document.getElementById('editReminderRecurring').checked;
+            document.getElementById('editReminderRecurringPeriod').style.display = recurring ? 'block' : 'none';
+        }
+
+        function addTask() {
+            const name = document.getElementById('taskName').value.trim();
+            const priority = document.getElementById('taskPriority').value;
+            const date = document.getElementById('taskDate').value;
+            const recurring = document.getElementById('taskRecurring').checked;
+            const recurringPeriod = document.getElementById('taskRecurringPeriod').value;
+
+            if (!name) { 
+                alert('Please enter task name'); 
+                return; 
+            }
+
+            const task = {
+                id: Date.now(),
+                name: name,
+                priority: priority,
+                dueDate: date || new Date().toISOString().split('T')[0],
+                status: 'pending',
+                recurring: recurring,
+                recurringPeriod: recurring ? recurringPeriod : null,
+                createdAt: new Date().toISOString()
+            };
+
+            const tasks = getTasks();
+            tasks.push(task);
+            saveTasks(tasks);
+
+            document.getElementById('taskName').value = '';
+            document.getElementById('taskDate').value = '';
+            document.getElementById('taskRecurring').checked = false;
+            document.getElementById('taskRecurringPeriod').style.display = 'none';
+
+            showNotification('âœ… Task added successfully!');
+            renderDashboard();
+            renderAllTasks();
+        }
+
+        function completeTask(id) {
+            const tasks = getTasks();
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.status = 'completed';
+                task.completedAt = new Date().toISOString();
+
+                if (task.recurring) {
+                    const nextTask = {...task, id: Date.now(), status: 'pending', dueDate: getNextDate(task.dueDate, task.recurringPeriod), createdAt: new Date().toISOString()};
+                    delete nextTask.completedAt;
+                    tasks.push(nextTask);
+                    showNotification('âœ… Task completed! Next recurring task created.');
+                } else {
+                    showNotification('âœ… Task completed!');
+                }
+
+                saveTasks(tasks);
+                renderDashboard();
+                renderAllTasks();
+                renderCompleted();
+            }
+        }
+
+        function undoComplete(id) {
+            const tasks = getTasks();
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.status = 'pending';
+                delete task.completedAt;
+                saveTasks(tasks);
+                showNotification('â†©ï¸ Task moved to pending!');
+                renderDashboard();
+                renderAllTasks();
+                renderCompleted();
+            }
+        }
+
+        function deleteTask(id) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                saveTasks(getTasks().filter(t => t.id !== id));
+                showNotification('ðŸ—‘ï¸ Task deleted!');
+                renderDashboard();
+                renderAllTasks();
+                renderCompleted();
+            }
+        }
+
+        function getNextDate(dateStr, period) {
+            const date = new Date(dateStr);
+            switch(period) {
+                case 'daily': date.setDate(date.getDate() + 1); break;
+                case '3days': date.setDate(date.getDate() + 3); break;
+                case '5days': date.setDate(date.getDate() + 5); break;
+                case 'weekly': date.setDate(date.getDate() + 7); break;
+                case '10days': date.setDate(date.getDate() + 10); break;
+                case 'biweekly': date.setDate(date.getDate() + 15); break;
+                case 'monthly': date.setMonth(date.getMonth() + 1); break;
+                case 'quarterly': date.setMonth(date.getMonth() + 3); break;
+                case 'semiannually': date.setMonth(date.getMonth() + 6); break;
+                case 'annually': date.setMonth(date.getMonth() + 12); break;
+                default: date.setMonth(date.getMonth() + 1);
+            }
+            return date.toISOString().split('T')[0];
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+            if (dateStr === today) return 'Today';
+            if (dateStr === tomorrow) return 'Tomorrow';
+            return date.toLocaleDateString('en-US', {day: '2-digit', month: 'short', year: 'numeric'});
+        }
+
+        function formatDateDDMMYYYY(dateStr) {
+            const date = new Date(dateStr);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return day + '-' + month + '-' + year;
+        }
+
+        function parseDateDDMMYYYY(dateStr) {
+            // Handle Excel date objects
+            if (dateStr instanceof Date) {
+                const year = dateStr.getFullYear();
+                const month = String(dateStr.getMonth() + 1).padStart(2, '0');
+                const day = String(dateStr.getDate()).padStart(2, '0');
+                return year + '-' + month + '-' + day;
+            }
+            
+            // Handle Excel serial date numbers
+            if (typeof dateStr === 'number') {
+                // Excel date serial number (days since 1900-01-01)
+                const excelEpoch = new Date(1900, 0, 1);
+                const date = new Date(excelEpoch.getTime() + (dateStr - 2) * 86400000);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return year + '-' + month + '-' + day;
+            }
+            
+            // Handle string dates in DD-MM-YYYY format
+            if (typeof dateStr === 'string') {
+                // Remove any extra spaces
+                dateStr = dateStr.trim();
+                
+                // Check if it's DD-MM-YYYY format
+                const parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    // DD-MM-YYYY to YYYY-MM-DD
+                    return parts[2] + '-' + parts[1] + '-' + parts[0];
+                }
+                
+                // Check if it's already YYYY-MM-DD format
+                if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                    return dateStr;
+                }
+            }
+            
+            // Default: return today's date
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function getRecurringLabel(period) {
+            const labels = {
+                'daily': 'Daily',
+                '3days': '3 Days',
+                '5days': '5 Days',
+                'weekly': 'Weekly',
+                '10days': '10 Days',
+                'biweekly': '15 Days',
+                'monthly': 'Monthly',
+                'quarterly': 'Quarterly',
+                'semiannually': 'Semi-Annual',
+                'annually': 'Annual'
+            };
+            return labels[period] || period;
+        }
+
+        function renderDashboard() {
+            const tasks = getTasks();
+            const today = new Date().toISOString().split('T')[0];
+            const todayTasks = tasks.filter(t => t.status === 'pending' && t.dueDate === today);
+            // Pending = Overdue tasks (due date before today, not completed)
+            const pendingTasks = tasks.filter(t => t.status === 'pending' && t.dueDate < today);
+
+            document.getElementById('todayTasks').innerHTML = todayTasks.length === 0 
+                ? '<div class="empty-state">No tasks for today</div>'
+                : todayTasks.map(renderDashboardTaskItem).join('');
+
+            document.getElementById('pendingTasks').innerHTML = pendingTasks.length === 0 
+                ? '<div class="empty-state">All caught up! No overdue tasks</div>'
+                : pendingTasks.map(renderDashboardTaskItem).join('');
+        }
+        
+        function renderDashboardTaskItem(task) {
+            return `
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-name">
+                            ${task.name}
+                            ${task.recurring ? '<span class="recurring-badge">' + getRecurringLabel(task.recurringPeriod) + '</span>' : ''}
+                        </div>
+                        <div class="task-meta">
+                            ðŸ“… ${formatDate(task.dueDate)}
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <input type="checkbox" class="task-checkbox" onchange="completeTask(${task.id})" />
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAllTasks() {
+            filterAllTasks();
+        }
+
+        function renderCompleted() {
+            const tasks = getTasks();
+            const completed = tasks.filter(t => t.status === 'completed');
+            document.getElementById('completedList').innerHTML = completed.length === 0 
+                ? '<div class="empty-state">No completed tasks</div>'
+                : completed.map(t => `
+                    <div class="task-item">
+                        <div class="task-info">
+                            <div class="task-name" style="text-decoration: line-through;">${t.name}</div>
+                            <div class="task-meta">
+                                <span class="priority-badge priority-${t.priority}">${t.priority}</span>
+                                <span style="margin-left: 10px;">âœ… ${formatDate(t.completedAt.split('T')[0])}</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="action-btn btn-undo" onclick="undoComplete(${t.id})">â†©ï¸ Undo</button>
+                            <button class="action-btn btn-delete" onclick="deleteTask(${t.id})">ðŸ—‘ï¸</button>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        function renderTaskItem(task) {
+            return `
+                <div class="task-item">
+                    <div class="task-info">
+                        <div class="task-name">
+                            ${task.name}
+                            ${task.recurring ? '<span class="recurring-badge">' + getRecurringLabel(task.recurringPeriod) + '</span>' : ''}
+                        </div>
+                        <div class="task-meta">
+                            ðŸ“… ${formatDate(task.dueDate)}
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <input type="checkbox" class="task-checkbox" onchange="completeTask(${task.id})" />
+                        <button class="action-btn btn-edit" onclick="editTask(${task.id})">âœï¸</button>
+                        <button class="action-btn btn-delete" onclick="deleteTask(${task.id})">ðŸ—‘ï¸</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addReminder() {
+            const name = document.getElementById('reminderName').value.trim();
+            const date = document.getElementById('reminderDate').value;
+            const time = document.getElementById('reminderTime').value;
+            const recurring = document.getElementById('reminderRecurring').checked;
+            const recurringPeriod = document.getElementById('reminderRecurringPeriod').value;
+
+            if (!name || !date || !time) { 
+                alert('Please fill all reminder fields'); 
+                return; 
+            }
+
+            const reminder = {
+                id: Date.now(),
+                name: name,
+                date: date,
+                time: time,
+                recurring: recurring,
+                recurringPeriod: recurring ? recurringPeriod : null,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+
+            const reminders = getReminders();
+            reminders.push(reminder);
+            saveReminders(reminders);
+
+            document.getElementById('reminderName').value = '';
+            document.getElementById('reminderDate').value = '';
+            document.getElementById('reminderTime').value = '';
+            document.getElementById('reminderRecurring').checked = false;
+            document.getElementById('reminderRecurringPeriod').style.display = 'none';
+
+            showNotification('â° Reminder added! Will auto-trigger at set time (checked every 5 seconds).');
+            renderReminders();
+            updateDebugInfo();
+        }
+
+        function completeReminder(id) {
+            const reminders = getReminders();
+            const reminder = reminders.find(r => r.id === id);
+            if (reminder) {
+                reminder.status = 'completed';
+                reminder.completedAt = new Date().toISOString();
+
+                if (reminder.recurring) {
+                    const nextReminder = {...reminder, id: Date.now(), status: 'pending', date: getNextDate(reminder.date, reminder.recurringPeriod), createdAt: new Date().toISOString()};
+                    delete nextReminder.completedAt;
+                    reminders.push(nextReminder);
+                    showNotification('âœ… Reminder completed! Next recurring reminder created.');
+                } else {
+                    showNotification('âœ… Reminder completed!');
+                }
+
+                saveReminders(reminders);
+                renderReminders();
+                updateDebugInfo();
+            }
+        }
+
+        function undoCompleteReminder(id) {
+            const reminders = getReminders();
+            const reminder = reminders.find(r => r.id === id);
+            if (reminder) {
+                reminder.status = 'pending';
+                delete reminder.completedAt;
+                localStorage.removeItem(getUserKey('shown_' + id));
+                saveReminders(reminders);
+                showNotification('â†©ï¸ Reminder moved to pending!');
+                renderReminders();
+                updateDebugInfo();
+            }
+        }
+
+        function deleteReminder(id) {
+            if (confirm('Are you sure you want to delete this reminder?')) {
+                localStorage.removeItem(getUserKey('shown_' + id));
+                saveReminders(getReminders().filter(r => r.id !== id));
+                showNotification('ðŸ—‘ï¸ Reminder deleted!');
+                renderReminders();
+                updateDebugInfo();
+            }
+        }
+
+        function editReminder(id) {
+            const reminders = getReminders();
+            const reminder = reminders.find(r => r.id === id);
+            if (reminder) {
+                editingReminderId = id;
+                document.getElementById('editReminderName').value = reminder.name;
+                document.getElementById('editReminderDate').value = reminder.date;
+                document.getElementById('editReminderTime').value = reminder.time;
+                document.getElementById('editReminderRecurring').checked = reminder.recurring;
+                document.getElementById('editReminderRecurringPeriod').value = reminder.recurringPeriod || 'monthly';
+                document.getElementById('editReminderRecurringPeriod').style.display = reminder.recurring ? 'block' : 'none';
+                document.getElementById('editReminderModal').classList.add('active');
+            }
+        }
+
+        function saveEditedReminder() {
+            const reminders = getReminders();
+            const reminder = reminders.find(r => r.id === editingReminderId);
+            if (reminder) {
+                reminder.name = document.getElementById('editReminderName').value.trim();
+                reminder.date = document.getElementById('editReminderDate').value;
+                reminder.time = document.getElementById('editReminderTime').value;
+                reminder.recurring = document.getElementById('editReminderRecurring').checked;
+                reminder.recurringPeriod = reminder.recurring ? document.getElementById('editReminderRecurringPeriod').value : null;
+                localStorage.removeItem(getUserKey('shown_' + editingReminderId));
+                saveReminders(reminders);
+                showNotification('âœ… Reminder updated successfully!');
+                renderReminders();
+                closeEditReminderModal();
+            }
+        }
+
+        function closeEditReminderModal() {
+            document.getElementById('editReminderModal').classList.remove('active');
+        }
+
+        function renderReminders() {
+            const reminders = getReminders();
+            const now = new Date();
+            const pending = reminders.filter(r => r.status === 'pending');
+            const completed = reminders.filter(r => r.status === 'completed');
+
+            let html = '';
+            
+            if (pending.length > 0) {
+                html += '<h4 style="margin-bottom: 10px;">â° Pending Reminders</h4>';
+                html += pending.map(r => {
+                    const reminderDateTime = new Date(r.date + 'T' + r.time);
+                    const isOverdue = reminderDateTime < now;
+                    return `
+                        <div class="task-item">
+                            <div class="task-info">
+                                <div class="task-name">
+                                    ${r.name}
+                                    ${r.recurring ? '<span class="recurring-badge">' + getRecurringLabel(r.recurringPeriod) + '</span>' : ''}
+                                    ${isOverdue ? '<span class="overdue-badge">OVERDUE</span>' : ''}
+                                </div>
+                                <div class="task-meta">
+                                    ðŸ“… ${formatDate(r.date)} at ${r.time}
+                                    ${isOverdue ? '<span style="color: #ff4757; font-weight: bold; margin-left: 10px;">âš ï¸ ' + getTimeAgo(reminderDateTime) + '</span>' : ''}
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                <input type="checkbox" class="task-checkbox" onchange="completeReminder(${r.id})" />
+                                <button class="action-btn btn-edit" onclick="editReminder(${r.id})">âœï¸</button>
+                                <button class="action-btn btn-delete" onclick="deleteReminder(${r.id})">ðŸ—‘ï¸</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            if (completed.length > 0) {
+                html += '<h4 style="margin: 20px 0 10px 0;">âœ… Completed Reminders</h4>';
+                html += completed.map(r => `
+                    <div class="task-item reminder-completed">
+                        <div class="task-info">
+                            <div class="task-name">${r.name}</div>
+                            <div class="task-meta">
+                                ðŸ“… ${formatDate(r.date)} at ${r.time}
+                                <span style="margin-left: 10px;">âœ… ${formatDate(r.completedAt.split('T')[0])}</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="action-btn btn-undo" onclick="undoCompleteReminder(${r.id})">â†©ï¸</button>
+                            <button class="action-btn btn-delete" onclick="deleteReminder(${r.id})">ðŸ—‘ï¸</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            if (pending.length === 0 && completed.length === 0) {
+                html = '<div class="empty-state">No reminders set</div>';
+            }
+
+            document.getElementById('remindersList').innerHTML = html;
+        }
+
+        // AUTO-TRIGGER REMINDERS - CHECK EVERY 5 SECONDS
+        function startReminderCheck() {
+            console.log('ðŸš€ Starting auto-check every 5 seconds...');
+            // Check immediately
+            checkReminders();
+            // Then check every 5 seconds for AUTO-TRIGGER
+            reminderInterval = setInterval(checkReminders, 5000);
+        }
+
+        function checkReminders() {
+            checkCounter++;
+            nextCheckCountdown = 5;
+            
+            const reminders = getReminders().filter(r => r.status === 'pending');
+            const now = new Date();
+            
+            console.log('ðŸ”„ Check #' + checkCounter + ' - Found ' + reminders.length + ' pending reminders');
+
+            reminders.forEach(reminder => {
+                const reminderDateTime = new Date(reminder.date + 'T' + reminder.time);
+                const timeDiff = now - reminderDateTime;
+                
+                console.log('â° Reminder:', reminder.name, '| Time diff:', Math.floor(timeDiff/1000), 'seconds');
+                
+                // Trigger if within 5 minutes window (300000 ms)
+                if (timeDiff >= 0 && timeDiff < 300000) {
+                    const shownKey = getUserKey('shown_' + reminder.id);
+                    if (!localStorage.getItem(shownKey)) {
+                        console.log('ðŸ”” AUTO-TRIGGERING NOTIFICATION for:', reminder.name);
+                        // AUTO-TRIGGER NOTIFICATION
+                        showCustomDesktopNotification(reminder, false);
+                        localStorage.setItem(shownKey, 'true');
+                    } else {
+                        console.log('â­ï¸ Already shown:', reminder.name);
+                    }
+                }
+            });
+            
+            updateDebugInfo();
+        }
+
+        function checkMissedReminders() {
+            const reminders = getReminders().filter(r => r.status === 'pending');
+            const now = new Date();
+            const missedReminders = [];
+
+            reminders.forEach(reminder => {
+                const reminderDateTime = new Date(reminder.date + 'T' + reminder.time);
+                if (reminderDateTime < now) {
+                    const shownKey = getUserKey('shown_' + reminder.id);
+                    if (!localStorage.getItem(shownKey)) {
+                        missedReminders.push(reminder);
+                        localStorage.setItem(shownKey, 'true');
+                    }
+                }
+            });
+
+            if (missedReminders.length > 0) {
+                showMissedRemindersModal(missedReminders);
+                missedReminders.forEach(reminder => {
+                    showCustomDesktopNotification(reminder, true);
+                });
+            }
+        }
+
+        function showMissedRemindersModal(reminders) {
+            const modal = document.createElement('div');
+            modal.className = 'missed-reminders-modal';
+            modal.id = 'missedRemindersModal';
+            
+            let html = '<div class="missed-reminders-content">';
+            html += '<h2>ðŸ”” You Have ' + reminders.length + ' Missed Reminder(s)!</h2>';
+            html += '<p style="color: #7f8c8d; margin-bottom: 20px;">These reminders were due while you were offline:</p>';
+            
+            reminders.forEach(reminder => {
+                const reminderDateTime = new Date(reminder.date + 'T' + reminder.time);
+                const timeAgo = getTimeAgo(reminderDateTime);
+                html += '<div class="missed-reminder-item">';
+                html += '<h3>â° ' + reminder.name + '</h3>';
+                html += '<p>ðŸ“… Due: ' + formatDate(reminder.date) + ' at ' + reminder.time + '</p>';
+                html += '<p style="color: #ff4757; font-weight: bold;">âš ï¸ ' + timeAgo + '</p>';
+                html += '</div>';
+            });
+            
+            html += '<button onclick="closeMissedRemindersModal()" style="width: 100%; padding: 15px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 20px;">Got It! Take Me to Reminders</button>';
+            html += '</div>';
+            
+            modal.innerHTML = html;
+            document.body.appendChild(modal);
+        }
+
+        function closeMissedRemindersModal() {
+            const modal = document.getElementById('missedRemindersModal');
+            if (modal) modal.remove();
+            switchTab('reminders');
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            if (days > 0) return days + ' day(s) ago';
+            if (hours > 0) return hours + ' hour(s) ago';
+            if (minutes > 0) return minutes + ' minute(s) ago';
+            return 'Just now';
+        }
+
+        function saveNote() {
+            const content = document.getElementById('noteInput').value.trim();
+            if (!content) {
+                alert('Please write something in the note');
+                return;
+            }
+
+            const note = {
+                id: Date.now(),
+                content: content,
+                date: new Date().toISOString()
+            };
+
+            notes.push(note);
+            saveNotesData();
+            document.getElementById('noteInput').value = '';
+            renderNotes();
+            setTimeout(showStartupGuide, 1000);
+            showNotification('ðŸ“ Note saved successfully!');
+        }
+
+        function editNote(noteId) {
+            const note = notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            const noteItem = document.getElementById('note-' + noteId);
+            noteItem.classList.add('editing');
+            
+            noteItem.innerHTML = `
+                <div class="note-header">
+                    <span class="note-date">${new Date(note.date).toLocaleString()}</span>
+                </div>
+                <textarea class="note-edit-input" id="edit-note-${noteId}">${note.content}</textarea>
+                <div class="note-actions">
+                    <button class="btn-primary" onclick="saveNoteEdit(${noteId})">ðŸ’¾ Save</button>
+                    <button class="btn-cancel" onclick="renderNotes()">âŒ Cancel</button>
+                </div>
+            `;
+        }
+
+        function saveNoteEdit(noteId) {
+            const note = notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            const newContent = document.getElementById('edit-note-' + noteId).value.trim();
+            
+            if (!newContent) {
+                alert('Note cannot be empty');
+                return;
+            }
+
+            note.content = newContent;
+            note.date = new Date().toISOString();
+            
+            saveNotesData();
+            renderNotes();
+            setTimeout(showStartupGuide, 1000);
+            showNotification('âœ… Note updated successfully!');
+        }
+
+        function deleteNote(noteId) {
+            if (confirm('Are you sure you want to delete this note?')) {
+                notes = notes.filter(n => n.id !== noteId);
+                saveNotesData();
+                renderNotes();
+            setTimeout(showStartupGuide, 1000);
+                showNotification('ðŸ—‘ï¸ Note deleted!');
+            }
+        }
+
+        function renderNotes() {
+            const notesContainer = document.getElementById('notesList');
+            
+            if (notes.length === 0) {
+                notesContainer.innerHTML = '<div class="empty-state">No notes yet. Write your first note above!</div>';
+            } else {
+                notesContainer.innerHTML = notes.map(note => `
+                    <div class="note-item" id="note-${note.id}">
+                        <div class="note-header">
+                            <span class="note-date">${new Date(note.date).toLocaleString()}</span>
+                            <div class="note-actions">
+                                <button class="btn-primary" onclick="editNote(${note.id})">âœï¸ Edit</button>
+                                <button class="btn-danger" onclick="deleteNote(${note.id})">ðŸ—‘ï¸ Delete</button>
+                            </div>
+                        </div>
+                        <div class="note-content">${note.content}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function openExportNotesModal() {
+            if (notes.length === 0) {
+                alert('No notes to export');
+                return;
+            }
+            document.getElementById('exportNotesModal').classList.add('active');
+        }
+
+        function closeExportNotesModal() {
+            document.getElementById('exportNotesModal').classList.remove('active');
+        }
+
+        function exportNotes(format) {
+            if (notes.length === 0) {
+                alert('No notes to export');
+                return;
+            }
+
+            let content, filename, type;
+
+            switch(format) {
+                case 'excel':
+                    if (typeof XLSX === 'undefined') {
+                        alert('Excel library not loaded. Please refresh the page.');
+                        return;
+                    }
+                    const data = notes.map(n => ({
+                        'Date': new Date(n.date).toLocaleString(),
+                        'Content': n.content
+                    }));
+                    const ws = XLSX.utils.json_to_sheet(data);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, 'Notes');
+                    XLSX.writeFile(wb, currentUser + '_notes_' + Date.now() + '.xlsx');
+                    break;
+                case 'csv':
+                    content = 'Date,Content\n';
+                    notes.forEach(n => {
+                        content += '"' + new Date(n.date).toLocaleString() + '","' + n.content.replace(/"/g, '""') + '"\n';
+                    });
+                    filename = currentUser + '_notes_' + Date.now() + '.csv';
+                    type = 'text/csv';
+                    downloadFile(content, filename, type);
+                    break;
+                case 'json':
+                    content = JSON.stringify(notes, null, 2);
+                    filename = currentUser + '_notes_' + Date.now() + '.json';
+                    type = 'application/json';
+                    downloadFile(content, filename, type);
+                    break;
+                case 'txt':
+                    content = 'Notes - ' + currentUser + '\n';
+                    content += 'Generated: ' + new Date().toLocaleString() + '\n';
+                    content += '='.repeat(50) + '\n\n';
+                    notes.forEach((n, i) => {
+                        content += (i + 1) + '. ' + new Date(n.date).toLocaleString() + '\n';
+                        content += n.content + '\n\n';
+                    });
+                    filename = currentUser + '_notes_' + Date.now() + '.txt';
+                    type = 'text/plain';
+                    downloadFile(content, filename, type);
+                    break;
+            }
+
+            closeExportNotesModal();
+            showNotification('ðŸ“¥ Notes exported as ' + format.toUpperCase() + '!');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => {
+                if (t.textContent.includes(tabName === 'dashboard' ? 'Dashboard' : 
+                   tabName === 'alltasks' ? 'All Tasks' : 
+                   tabName === 'completed' ? 'Completed' : 
+                   tabName === 'reminders' ? 'Reminders' : 'Notepad')) {
+                    t.classList.add('active');
+                }
+            });
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            if (tabName === 'dashboard') renderDashboard();
+            if (tabName === 'alltasks') renderAllTasks();
+            if (tabName === 'completed') renderCompleted();
+            if (tabName === 'reminders') renderReminders();
+            if (tabName === 'notepad') renderNotes();
+            setTimeout(showStartupGuide, 1000);
+        }
+
+        function openExportModal() {
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        function closeExportModal() {
+            document.getElementById('exportModal').classList.remove('active');
+        }
+
+        function openImportModal() {
+            document.getElementById('importModal').classList.add('active');
+        }
+
+        function closeImportModal() {
+            document.getElementById('importModal').classList.remove('active');
+        }
+
+        function exportToExcel() {
+            if (typeof XLSX === 'undefined') { 
+                alert('Excel library not loaded. Please refresh the page.'); 
+                return; 
+            }
+            const tasks = getTasks();
+            const data = tasks.map(t => ({
+                'Task Name': t.name,
+                'Priority': t.priority,
+                'Due Date': formatDateDDMMYYYY(t.dueDate),
+                'Status': t.status,
+                'Recurring': t.recurring ? 'Yes' : 'No',
+                'Recurring Period': t.recurring ? getRecurringLabel(t.recurringPeriod) : 'N/A'
+            }));
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Tasks');
+            XLSX.writeFile(wb, currentUser + '_tasks_' + new Date().toISOString().split('T')[0] + '.xlsx');
+            closeExportModal();
+            showNotification('ðŸ“Š Exported to Excel!');
+        }
+
+        function importFromExcel(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (typeof XLSX === 'undefined') { 
+                alert('Excel library not loaded. Please refresh the page.'); 
+                return; 
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(sheet);
+                    const tasks = getTasks();
+                    let count = 0;
+
+                    jsonData.forEach(row => {
+                        if (row['Task Name']) {
+                            // Parse due date
+                            let dueDate = new Date().toISOString().split('T')[0];
+                            if (row['Due Date']) {
+                                try {
+                                    dueDate = parseDateDDMMYYYY(row['Due Date']);
+                                } catch (e) {
+                                    console.error('Error parsing date:', row['Due Date'], e);
+                                }
+                            }
+                            
+                            // Map recurring period from Excel to app format
+                            let recurringPeriod = null;
+                            if (row['Recurring'] === 'Yes' && row['Recurring Period']) {
+                                const periodMap = {
+                                    'Daily': 'daily',
+                                    'daily': 'daily',
+                                    '3 Days': '3days',
+                                    '3days': '3days',
+                                    '5 Days': '5days',
+                                    '5days': '5days',
+                                    'Weekly': 'weekly',
+                                    'weekly': 'weekly',
+                                    '10 Days': '10days',
+                                    '10days': '10days',
+                                    '15 Days': 'biweekly',
+                                    'Bi-Weekly': 'biweekly',
+                                    'biweekly': 'biweekly',
+                                    'Monthly': 'monthly',
+                                    'monthly': 'monthly',
+                                    'Quarterly': 'quarterly',
+                                    'quarterly': 'quarterly',
+                                    'Semi-Annual': 'semiannually',
+                                    'Semi-Annually': 'semiannually',
+                                    'semiannually': 'semiannually',
+                                    'Annual': 'annually',
+                                    'Annually': 'annually',
+                                    'annually': 'annually'
+                                };
+                                recurringPeriod = periodMap[row['Recurring Period']] || 'monthly';
+                            }
+                            
+                            tasks.push({
+                                id: Date.now() + count,
+                                name: row['Task Name'],
+                                priority: (row['Priority'] || 'medium').toLowerCase(),
+                                dueDate: dueDate,
+                                status: row['Status'] || 'pending',
+                                recurring: row['Recurring'] === 'Yes',
+                                recurringPeriod: recurringPeriod,
+                                createdAt: new Date().toISOString()
+                            });
+                            count++;
+                        }
+                    });
+
+                    saveTasks(tasks);
+                    showNotification('ðŸ“¥ ' + count + ' tasks imported successfully!');
+                    renderDashboard();
+                    renderAllTasks();
+                    closeImportModal();
+                    e.target.value = '';
+                } catch (error) {
+                    alert('Error importing: ' + error.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function exportToCSV() {
+            const tasks = getTasks();
+            let csv = 'Task Name,Priority,Due Date,Status,Recurring,Recurring Period\n';
+            tasks.forEach(t => {
+                csv += '"' + t.name + '","' + t.priority + '","' + formatDateDDMMYYYY(t.dueDate) + '","' + t.status + '","' + (t.recurring ? 'Yes' : 'No') + '","' + (t.recurring ? getRecurringLabel(t.recurringPeriod) : 'N/A') + '"\n';
+            });
+            downloadFile(csv, currentUser + '_tasks.csv', 'text/csv');
+            closeExportModal();
+            showNotification('ðŸ“„ Exported to CSV!');
+        }
+
+        function exportToJSON() {
+            const tasks = getTasks();
+            const json = JSON.stringify(tasks, null, 2);
+            downloadFile(json, currentUser + '_tasks.json', 'application/json');
+            closeExportModal();
+            showNotification('ðŸ”§ Exported to JSON!');
+        }
+
+        function exportToTXT() {
+            const tasks = getTasks();
+            let txt = 'Task List - ' + currentUser + '\n';
+            txt += 'Generated: ' + new Date().toLocaleString() + '\n';
+            txt += '==================================================\n\n';
+            tasks.forEach((t, i) => {
+                txt += (i + 1) + '. ' + t.name + '\n';
+                txt += '   Priority: ' + t.priority.toUpperCase() + '\n';
+                txt += '   Due Date: ' + formatDate(t.dueDate) + '\n';
+                txt += '   Status: ' + t.status + '\n';
+                txt += '   Recurring: ' + (t.recurring ? 'Yes (' + getRecurringLabel(t.recurringPeriod) + ')' : 'No') + '\n\n';
+            });
+            downloadFile(txt, currentUser + '_tasks.txt', 'text/plain');
+            closeExportModal();
+            showNotification('ðŸ“ Exported to TXT!');
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], {type: type});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 3000);
+        }
+
+        let editingTaskId = null;
+
+        function toggleEditTaskRecurring() {
+            const recurring = document.getElementById('editTaskRecurring').checked;
+            document.getElementById('editTaskRecurringPeriod').style.display = recurring ? 'block' : 'none';
+        }
+
+        function editTask(id) {
+            const tasks = getTasks();
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                editingTaskId = id;
+                document.getElementById('editTaskName').value = task.name;
+                document.getElementById('editTaskPriority').value = task.priority;
+                document.getElementById('editTaskDate').value = task.dueDate;
+                document.getElementById('editTaskRecurring').checked = task.recurring;
+                document.getElementById('editTaskRecurringPeriod').value = task.recurringPeriod || 'monthly';
+                document.getElementById('editTaskRecurringPeriod').style.display = task.recurring ? 'block' : 'none';
+                document.getElementById('editTaskModal').classList.add('active');
+            }
+        }
+
+        function saveEditedTask() {
+            const tasks = getTasks();
+            const task = tasks.find(t => t.id === editingTaskId);
+            if (task) {
+                task.name = document.getElementById('editTaskName').value.trim();
+                task.priority = document.getElementById('editTaskPriority').value;
+                task.dueDate = document.getElementById('editTaskDate').value;
+                task.recurring = document.getElementById('editTaskRecurring').checked;
+                task.recurringPeriod = task.recurring ? document.getElementById('editTaskRecurringPeriod').value : null;
+                saveTasks(tasks);
+                showNotification('âœ… Task updated successfully!');
+                renderDashboard();
+                renderAllTasks();
+                closeEditTaskModal();
+            }
+        }
+
+        function closeEditTaskModal() {
+            document.getElementById('editTaskModal').classList.remove('active');
+        }
+
+
+        function showStartupGuide() {
+            const shown = localStorage.getItem(getUserKey('startupGuideShown'));
+            if (!shown && Notification.permission === 'default') {
+                document.getElementById('startupGuide').style.display = 'flex';
+            }
+        }
+        
+        function closeStartupGuide() {
+            document.getElementById('startupGuide').style.display = 'none';
+            localStorage.setItem(getUserKey('startupGuideShown'), 'true');
+        }
+
+
+        function filterAllTasks() {
+            const tasks = getTasks();
+            const pending = tasks.filter(t => t.status === 'pending');
+            
+            const priorityFilter = document.getElementById('filterPriority').value;
+            const recurringFilter = document.getElementById('filterRecurring').value;
+            const dateFilter = document.getElementById('filterDate').value;
+            
+            let filtered = pending;
+            
+            // Priority filter
+            if (priorityFilter !== 'all') {
+                filtered = filtered.filter(t => t.priority === priorityFilter);
+            }
+            
+            // Recurring filter
+            if (recurringFilter === 'recurring') {
+                filtered = filtered.filter(t => t.recurring === true);
+            } else if (recurringFilter === 'nonrecurring') {
+                filtered = filtered.filter(t => t.recurring === false);
+            }
+            
+            // Date filter
+            const today = new Date().toISOString().split('T')[0];
+            const todayDate = new Date(today);
+            
+            if (dateFilter === 'overdue') {
+                filtered = filtered.filter(t => t.dueDate < today);
+            } else if (dateFilter === 'today') {
+                filtered = filtered.filter(t => t.dueDate === today);
+            } else if (dateFilter === 'week') {
+                const weekLater = new Date(todayDate);
+                weekLater.setDate(weekLater.getDate() + 7);
+                const weekLaterStr = weekLater.toISOString().split('T')[0];
+                filtered = filtered.filter(t => t.dueDate >= today && t.dueDate <= weekLaterStr);
+            } else if (dateFilter === 'month') {
+                const monthLater = new Date(todayDate);
+                monthLater.setMonth(monthLater.getMonth() + 1);
+                const monthLaterStr = monthLater.toISOString().split('T')[0];
+                filtered = filtered.filter(t => t.dueDate >= today && t.dueDate <= monthLaterStr);
+            }
+            
+            document.getElementById('allTasksList').innerHTML = filtered.length === 0 
+                ? '<div class="empty-state">No tasks match the selected filters</div>'
+                : filtered.map(renderTaskItem).join('');
+        }
+        
+        function clearFilters() {
+            document.getElementById('filterPriority').value = 'all';
+            document.getElementById('filterRecurring').value = 'all';
+            document.getElementById('filterDate').value = 'all';
+            renderAllTasks();
+        }
+
+    </script>
+
+    <div id="editTaskModal" class="modal">
+        <div class="edit-modal-content">
+            <h2>âœï¸ Edit Task</h2>
+            <label>Task Name:</label>
+            <input type="text" id="editTaskName" />
+            <label>Priority:</label>
+            <select id="editTaskPriority">
+                <option value="high">High Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="low">Low Priority</option>
+            </select>
+            <label>Due Date:</label>
+            <input type="date" id="editTaskDate" />
+            <label class="recurring-label">
+                <input type="checkbox" id="editTaskRecurring" onchange="toggleEditTaskRecurring()" />
+                <span>Recurring</span>
+            </label>
+            <select id="editTaskRecurringPeriod" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #e0e0e0; border-radius: 8px; display: none;">
+                <option value="daily">Daily</option>
+                <option value="3days">Every 3 Days</option>
+                <option value="5days">Every 5 Days</option>
+                <option value="weekly">Weekly</option>
+                <option value="10days">Every 10 Days</option>
+                <option value="biweekly">Bi-Weekly (15 Days)</option>
+                <option value="monthly" selected>Monthly</option>
+                <option value="quarterly">Quarterly (3 Months)</option>
+                <option value="semiannually">Semi-Annually (6 Months)</option>
+                <option value="annually">Annually (12 Months)</option>
+            </select>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="saveEditedTask()" style="flex: 1; background: #10ac84; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">Save</button>
+                <button onclick="closeEditTaskModal()" style="flex: 1; background: #ff4757; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="startupGuide" class="notification-popup" style="display: none;">
+        <div class="notification-popup-content">
+            <h2>ðŸ“‹ Welcome to NoteNest!</h2>
+            <p style="text-align: left; margin: 20px 0;">
+                <strong>Quick Setup (3 steps):</strong>
+            </p>
+            <ol style="text-align: left; margin: 20px 40px; line-height: 2;">
+                <li><strong>Enable Notifications</strong> - Click the red badge above</li>
+                <li><strong>Pin This Tab</strong> - Right-click tab â†’ "Pin Tab"</li>
+                <li><strong>Set Your Reminders</strong> - Go to Reminders tab</li>
+            </ol>
+            <p style="color: #7f8c8d; font-size: 14px; margin-top: 20px;">
+                ðŸ’¡ <strong>Tip:</strong> Keep this tab open (pinned) for notifications to work!
+            </p>
+            <button onclick="closeStartupGuide()">âœ… Got It, Let's Start!</button>
+        </div>
+    </div>
+
+</body>
+</html>
